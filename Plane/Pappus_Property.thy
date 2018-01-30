@@ -3,8 +3,10 @@ theory Pappus_Property
 begin
 
 (* Contents:
-- We give two formulations of Pappus's property for a plane [is_pappus1] [is_pappus2].
-- We prove the equivalence of these two formulations [pappus_equiv]. 
+- We give two formulations of Pappus's property for a configuration of nine points
+ [is_pappus1] [is_pappus2].
+- We prove the equivalence of these two formulations [pappus_equiv].
+- We state Pappus property for a plane [is_pappus]. 
 *)
 
 definition col :: "[Points, Points, Points] \<Rightarrow> bool" where
@@ -191,4 +193,11 @@ qed
 
 lemma pappus_equiv: "is_pappus1 A B C A' B' C' P Q R = is_pappus2 A B C A' B' C' P Q R"
   using pappus12 pappus21 by blast
+
+(* Finally, we give Pappus property for a plane stating that the diagonal points 
+of any hexagon of that plane, whose vertices lie alternately on two lines, are collinear *)
+
+definition is_pappus :: "bool" where
+"is_pappus \<equiv> \<forall>A B C D E F P Q R. is_pappus2 A B C D E F P Q R"
+
 end
