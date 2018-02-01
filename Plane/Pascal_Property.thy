@@ -45,6 +45,11 @@ lemma col_rot_CW:
   shows "col R P Q"
   using assms col_def by auto
 
+lemma col_2cycle: 
+  assumes "col P Q R"
+  shows "col P R Q"
+  using assms col_def by auto
+
 lemma distinct6_rot_CW:
   assumes "distinct6 A B C D E F"
   shows "distinct6 F A B C D E"
@@ -131,6 +136,9 @@ lemma col_A_B_ABl: "col A B (inter (line A B) l)"
 lemma col_A_B_lAB: "col A B (inter l (line A B))"
   using col_A_B_ABl inter_comm by auto
 
+lemma inter_is_a_intersec: "is_a_intersec (inter (line A B) (line C D)) A B C D"
+  by (simp add: col_A_B_ABl col_A_B_lAB col_rot_CW is_a_intersec_def)
+
 lemma is_pascal_under_AB:
   assumes "is_pappus" and "line B C \<noteq> line E F" and "line C D \<noteq> line A F"
     and "line A B \<noteq> line D E" and "line A C \<noteq> line E F" and "line B F \<noteq> line C D" 
@@ -139,8 +147,24 @@ lemma is_pascal_under_AB:
 proof -
   have "distinct6 B A C D E F"
     using assms(7) distinct6_def is_pascal_def by auto
-  have "col A C (inter (line A C) (line E F))"
-    by (simp add: col_A_B_ABl)
-
+  define W where "W = inter (line A C) (line E F)"
+  have "col A C W"
+    by (simp add: col_A_B_ABl W_def)
+  define P Q R where "P = inter (line B C) (line E F)"
+    and "Q = inter (line C D) (line A F)"
+    and "R = inter (line A B) (line D E)"
+  have "col P Q R"
+    using P_def Q_def R_def assms(7) is_pascal_def by auto
+      (* Below we take care of a few possible degenerate cases *)
+  have "is_pascal B A C D E F" if "P = Q"
+    by (smt P_def Q_def \<open>distinct6 B A C D E F\<close> assms(5) assms(6) col_A_B_ABl distinct6_def incidB_lAB incid_inter_left incid_inter_right is_pascal_def line_comm that uniq_inter)
+ have "is_pascal B A C D E F" if "P = R"
+   by (smt P_def R_def \<open>distinct6 B A C D E F\<close> ax_uniqueness col_ABA col_def distinct6_def incidA_lAB incidB_lAB incid_inter_right inter_comm is_pascal_def that)
+  have "is_pascal B A C D E F" if "P = A"
+    by (smt P_def Q_def R_def \<open>P = Q \<Longrightarrow> is_pascal B A C D E F\<close> \<open>P = R \<Longrightarrow> is_pascal B A C D E F\<close> \<open>col P Q R\<close> \<open>distinct6 B A C D E F\<close> assms(2) ax_uniqueness col_def distinct6_def incidA_lAB incidB_lAB incid_inter_left incid_inter_right that)
+  have "is_pascal B A C D E F" if "P = C"
+    by (smt P_def Q_def R_def \<open>P = Q \<Longrightarrow> is_pascal B A C D E F\<close> \<open>col P Q R\<close> \<open>distinct6 B A C D E F\<close> ax_uniqueness col_def distinct6_def incidA_lAB incidB_lAB incid_inter_left incid_inter_right is_pascal_def that)    
+  have "is_pascal B A C D E F" if "P = W"
+    by (smt P_def Q_def R_def W_def \<open>P = C \<Longrightarrow> is_pascal B A C D E F\<close> \<open>P = R \<Longrightarrow> is_pascal B A C D E F\<close> \<open>col P Q R\<close> \<open>distinct6 B A C D E F\<close> ax_uniqueness col_def distinct6_def incidA_lAB incidB_lAB incid_inter_left incid_inter_right is_pascal_def that) 
 
 
