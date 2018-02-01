@@ -139,6 +139,39 @@ lemma col_A_B_lAB: "col A B (inter l (line A B))"
 lemma inter_is_a_intersec: "is_a_intersec (inter (line A B) (line C D)) A B C D"
   by (simp add: col_A_B_ABl col_A_B_lAB col_rot_CW is_a_intersec_def)
 
+definition line_ext :: "Lines \<Rightarrow> Points set" where
+"line_ext l \<equiv> {P. incid P l}"
+
+lemma line_left_inter_1: 
+  assumes "P \<in> line_ext l" and "P \<notin> line_ext m"
+  shows "line (inter l m) P = l"
+  by (metis CollectD CollectI assms(1) assms(2) incidA_lAB incidB_lAB incid_inter_left incid_inter_right line_ext_def uniq_inter)
+
+lemma line_left_inter_2:
+  assumes "P \<in> line_ext m" and "P \<notin> line_ext l"
+  shows "line (inter l m) P = m"
+  using assms(1) assms(2) inter_comm line_left_inter_1 by fastforce
+
+lemma line_right_inter_1:
+  assumes "P \<in> line_ext l" and "P \<notin> line_ext m"
+  shows "line P (inter l m) = l"
+  by (metis assms(1) assms(2) line_comm line_left_inter_1)
+
+lemma line_right_inter_2:
+  assumes "P \<in> line_ext m" and "P \<notin> line_ext l"
+  shows "line P (inter l m) = m"
+  by (metis assms(1) assms(2) inter_comm line_comm line_left_inter_1)
+
+lemma inter_ABC_1: 
+  assumes "line A B \<noteq> line C A"
+  shows "inter (line A B) (line C A) = A"
+  using assms ax_uniqueness incidA_lAB incidB_lAB incid_inter_left incid_inter_right by blast
+
+lemma line_inter_2:
+  assumes "inter l m \<noteq> inter l' m" 
+  shows "line (inter l m) (inter l' m) = m"
+  using assms ax_uniqueness incidA_lAB incidB_lAB incid_inter_right by blast
+
 lemma is_pascal_under_AB:
   assumes "is_pappus" and "line B C \<noteq> line E F" and "line C D \<noteq> line A F"
     and "line A B \<noteq> line D E" and "line A C \<noteq> line E F" and "line B F \<noteq> line C D" 
@@ -151,20 +184,52 @@ proof -
   have "col A C W"
     by (simp add: col_A_B_ABl W_def)
   define P Q R where "P = inter (line B C) (line E F)"
-    and "Q = inter (line C D) (line A F)"
-    and "R = inter (line A B) (line D E)"
+    and "Q = inter (line A B) (line D E)"
+    and "R = inter (line C D) (line A F)"
   have "col P Q R"
-    using P_def Q_def R_def assms(7) is_pascal_def by auto
-      (* Below we take care of a few possible degenerate cases *)
+    using P_def Q_def R_def assms(7) col_2cycle is_pascal_def by force
+      (* Below we take care of a few degenerate cases *)
   have "is_pascal B A C D E F" if "P = Q"
-    by (smt P_def Q_def \<open>distinct6 B A C D E F\<close> assms(5) assms(6) col_A_B_ABl distinct6_def incidB_lAB incid_inter_left incid_inter_right is_pascal_def line_comm that uniq_inter)
- have "is_pascal B A C D E F" if "P = R"
-   by (smt P_def R_def \<open>distinct6 B A C D E F\<close> ax_uniqueness col_ABA col_def distinct6_def incidA_lAB incidB_lAB incid_inter_right inter_comm is_pascal_def that)
+    by (smt P_def Q_def \<open>distinct6 B A C D E F\<close> col_ABA col_def distinct6_def incidA_lAB incidB_lAB incid_inter_left inter_comm is_pascal_def that uniq_inter)
+  have "is_pascal B A C D E F" if "P = R"
+    by (smt P_def R_def \<open>distinct6 B A C D E F\<close> assms(5) assms(6) col_A_B_ABl distinct6_def incidB_lAB incid_inter_left incid_inter_right is_pascal_def line_comm that uniq_inter)
   have "is_pascal B A C D E F" if "P = A"
     by (smt P_def Q_def R_def \<open>P = Q \<Longrightarrow> is_pascal B A C D E F\<close> \<open>P = R \<Longrightarrow> is_pascal B A C D E F\<close> \<open>col P Q R\<close> \<open>distinct6 B A C D E F\<close> assms(2) ax_uniqueness col_def distinct6_def incidA_lAB incidB_lAB incid_inter_left incid_inter_right that)
   have "is_pascal B A C D E F" if "P = C"
-    by (smt P_def Q_def R_def \<open>P = Q \<Longrightarrow> is_pascal B A C D E F\<close> \<open>col P Q R\<close> \<open>distinct6 B A C D E F\<close> ax_uniqueness col_def distinct6_def incidA_lAB incidB_lAB incid_inter_left incid_inter_right is_pascal_def that)    
+    by (smt P_def Q_def R_def \<open>P = R \<Longrightarrow> is_pascal B A C D E F\<close> \<open>col P Q R\<close> \<open>distinct6 B A C D E F\<close> ax_uniqueness col_def distinct6_def incidA_lAB incidB_lAB incid_inter_left incid_inter_right is_pascal_def that)
   have "is_pascal B A C D E F" if "P = W"
-    by (smt P_def Q_def R_def W_def \<open>P = C \<Longrightarrow> is_pascal B A C D E F\<close> \<open>P = R \<Longrightarrow> is_pascal B A C D E F\<close> \<open>col P Q R\<close> \<open>distinct6 B A C D E F\<close> ax_uniqueness col_def distinct6_def incidA_lAB incidB_lAB incid_inter_left incid_inter_right is_pascal_def that) 
-
-
+    by (smt P_def Q_def R_def W_def \<open>P = C \<Longrightarrow> is_pascal B A C D E F\<close> \<open>P = Q \<Longrightarrow> is_pascal B A C D E F\<close> \<open>col P Q R\<close> \<open>distinct6 B A C D E F\<close> ax_uniqueness col_def distinct6_def incidA_lAB incidB_lAB incid_inter_left incid_inter_right is_pascal_def that) 
+  have "is_pascal B A C D E F" if "Q = R"
+    by (smt Q_def R_def \<open>distinct6 B A C D E F\<close> ax_uniqueness col_ABB col_def distinct6_def incidA_lAB incid_inter_left incid_inter_right is_pascal_def line_comm that)
+  have "is_pascal B A C D E F" if "Q = A"
+    by (smt P_def Q_def R_def \<open>col P Q R\<close> \<open>distinct6 B A C D E F\<close> assms(6) col_ABA col_def distinct6_def incidA_lAB incidB_lAB incid_inter_left incid_inter_right is_pascal_def that uniq_inter)
+  have "is_pascal B A C D E F" if "Q = C"
+    by (smt P_def Q_def R_def \<open>P = Q \<Longrightarrow> is_pascal B A C D E F\<close> \<open>Q = R \<Longrightarrow> is_pascal B A C D E F\<close> \<open>col P Q R\<close> \<open>distinct6 B A C D E F\<close> assms(4) ax_uniqueness col_def distinct6_def incidA_lAB incidB_lAB incid_inter_left incid_inter_right that)
+  have "is_pascal B A C D E F" if "Q = W"
+    by (metis Q_def W_def \<open>distinct6 B A C D E F\<close> col_ABA is_pascal_def line_comm that)
+  have "is_pascal B A C D E F" if "R = A"
+    by (smt P_def Q_def R_def \<open>col P Q R\<close> \<open>distinct6 B A C D E F\<close> assms(6) col_ABA col_def distinct6_def incidA_lAB incidB_lAB incid_inter_left incid_inter_right is_pascal_def that uniq_inter)
+  have "is_pascal B A C D E F" if "R = C"
+    by (smt P_def Q_def R_def W_def \<open>P = R \<Longrightarrow> is_pascal B A C D E F\<close> \<open>P = W \<Longrightarrow> is_pascal B A C D E F\<close> \<open>R = A \<Longrightarrow> is_pascal B A C D E F\<close> \<open>col P Q R\<close> \<open>distinct6 B A C D E F\<close> ax_uniqueness col_def incidA_lAB incidB_lAB incid_inter_left incid_inter_right is_pascal_def that)
+  have "is_pascal B A C D E F" if "R = W"
+    by (metis R_def W_def \<open>R = A \<Longrightarrow> is_pascal B A C D E F\<close> \<open>R = C \<Longrightarrow> is_pascal B A C D E F\<close> assms(3) ax_uniqueness incidA_lAB incidB_lAB incid_inter_left incid_inter_right that)
+  have "is_pascal B A C D E F" if "A = W"
+    by (smt P_def Q_def R_def W_def \<open>P = R \<Longrightarrow> is_pascal B A C D E F\<close> \<open>Q = A \<Longrightarrow> is_pascal B A C D E F\<close> \<open>col P Q R\<close> \<open>distinct6 B A C D E F\<close> ax_uniqueness col_def distinct6_def incidA_lAB incidB_lAB incid_inter_left incid_inter_right is_pascal_def that)
+  have "is_pascal B A C D E F" if "C = W"
+    by (metis P_def W_def \<open>P = W \<Longrightarrow> is_pascal B A C D E F\<close> assms(2) ax_uniqueness incidB_lAB incid_inter_left incid_inter_right that)
+  have "col (inter (line P C) (line A Q)) (inter (line Q W) (line C R)) 
+    (inter (line P W) (line A R))" if "distinct6 P Q R A C W"
+    using assms(1) is_pappus_def is_pappus2_def \<open>distinct6 P Q R A C W\<close> \<open>col P Q R\<close>
+      \<open>col A C W\<close> inter_is_a_intersec inter_line_line_comm by metis
+  have "is_pascal B A C D E F" if "C \<in> line_ext (line E F)"
+    using P_def \<open>P = C \<Longrightarrow> is_pascal B A C D E F\<close> assms(2) ax_uniqueness incidB_lAB incid_inter_left incid_inter_right line_ext_def that by fastforce 
+  have "is_pascal B A C D E F" if "A \<in> line_ext (line D E)"
+    using Q_def \<open>Q = A \<Longrightarrow> is_pascal B A C D E F\<close> assms(4) ax_uniqueness incidA_lAB incid_inter_left incid_inter_right line_ext_def that by blast
+  have "is_pascal B A C D E F" if "line B C = line A B"
+    by (metis P_def W_def \<open>P = W \<Longrightarrow> is_pascal B A C D E F\<close> \<open>distinct6 B A C D E F\<close> ax_uniqueness distinct6_def incidA_lAB incidB_lAB that)
+  have "inter (line P C) (line A Q) = B" if
+    "C \<notin> line_ext (line E F)" and "A \<notin> line_ext (line D E)" and "line B C \<noteq> line A B"
+    by (smt CollectI P_def Q_def ax_uniqueness incidA_lAB incidB_lAB incid_inter_left incid_inter_right line_ext_def that(1) that(2) that(3))
+  have "is_pascal B A C D E F" if "line E F = line A F"
+    by (metis W_def \<open>A = W \<Longrightarrow> is_pascal B A C D E F\<close> assms(5) ax_uniqueness incidA_lAB incid_inter_left incid_inter_right that)
+  have "inter (line P W) (line A R) = F" if "line E F \<noteq> line A F" 
