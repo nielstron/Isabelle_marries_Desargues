@@ -287,3 +287,47 @@ proof -
   show "is_pascal B A C D E F"
     using \<open>A = W \<Longrightarrow> is_pascal B A C D E F\<close> \<open>A \<in> line_ext (line C D) \<Longrightarrow> is_pascal B A C D E F\<close> \<open>A \<in> line_ext (line D E) \<Longrightarrow> is_pascal B A C D E F\<close> \<open>C = W \<Longrightarrow> is_pascal B A C D E F\<close> \<open>C \<in> line_ext (line E F) \<Longrightarrow> is_pascal B A C D E F\<close> \<open>P = A \<Longrightarrow> is_pascal B A C D E F\<close> \<open>P = C \<Longrightarrow> is_pascal B A C D E F\<close> \<open>P = Q \<Longrightarrow> is_pascal B A C D E F\<close> \<open>P = R \<Longrightarrow> is_pascal B A C D E F\<close> \<open>P = W \<Longrightarrow> is_pascal B A C D E F\<close> \<open>Pascal_Property.inter (line B C) (line E F) = Pascal_Property.inter (line A C) (line E F) \<Longrightarrow> is_pascal B A C D E F\<close> \<open>Q = A \<Longrightarrow> is_pascal B A C D E F\<close> \<open>Q = C \<Longrightarrow> is_pascal B A C D E F\<close> \<open>Q = R \<Longrightarrow> is_pascal B A C D E F\<close> \<open>Q = W \<Longrightarrow> is_pascal B A C D E F\<close> \<open>R = A \<Longrightarrow> is_pascal B A C D E F\<close> \<open>R = C \<Longrightarrow> is_pascal B A C D E F\<close> \<open>R = W \<Longrightarrow> is_pascal B A C D E F\<close> \<open>\<lbrakk>distinct6 P Q R A C W; C \<notin> line_ext (line E F); A \<notin> line_ext (line D E); line B C \<noteq> line A B; line E F \<noteq> line A F; A \<notin> line_ext (line C D); Pascal_Property.inter (line B C) (line E F) \<noteq> Pascal_Property.inter (line A C) (line E F)\<rbrakk> \<Longrightarrow> col (Pascal_Property.inter (line A C) (line E F)) (Pascal_Property.inter (line C D) (line B F)) (Pascal_Property.inter (line A B) (line D E))\<close> \<open>distinct6 B A C D E F\<close> \<open>line B C = line A B \<Longrightarrow> is_pascal B A C D E F\<close> \<open>line E F = line A F \<Longrightarrow> is_pascal B A C D E F\<close> distinct6_def is_pascal_def line_comm by fastforce
 qed
+
+definition pascal_prop :: "bool" where
+"pascal_prop \<equiv> \<forall>A B C D E F. is_pascal A B C D E F \<longrightarrow> is_pascal B A C D E F"
+
+lemma is_pascal_under_alternate_vertices:
+  assumes "pascal_prop" and "is_pascal A B C A' B' C'"
+  shows "is_pascal A B' C A' B C'"
+  using assms(1) assms(2) pascal_prop_def is_pascal_rot_CW by presburger
+
+lemma col_inter:
+  assumes "distinct6 A B C D E F" and "col A B C" and "col D E F"
+  shows "inter (line B C) (line E F) = inter (line A B) (line D E)"
+  by (smt assms(1) assms(2) assms(3) ax_uniqueness col_def distinct6_def incidA_lAB incidB_lAB)
+
+lemma pascal_pappus1:
+  assumes "pascal_prop"
+  shows "is_pappus1 A B C A' B' C' P Q R"
+proof-
+  define a1 a2 a3 a4 a5 a6 where "a1 = distinct6 A B C A' B' C'"  and "a2 = col A B C" and "a3 = col A' B' C'" and 
+    "a4 = is_a_proper_intersec P A B' A' B" and "a5 = is_a_proper_intersec Q B C' B' C" and "a6 = is_a_proper_intersec R A C' A' C" 
+  (* i.e. we have assumed a Pappus configuration *)
+  have "inter (line B C) (line B' C') = inter (line A B) (line A' B')" if a1 a2 a3 a4 a5 a6
+    using a1_def a2_def a3_def col_inter that(1) that(2) that(3) by blast
+  then have "is_pascal A B C A' B' C'" if a1 a2 a3 a4 a5 a6
+    using a1_def col_ABA is_pascal_def that(1) that(2) that(3) that(4) that(5) that(6) by auto
+  then have "is_pascal A B' C A' B C'" if a1 a2 a3 a4 a5 a6
+    using assms is_pascal_under_alternate_vertices that(1) that(2) that(3) that(4) that(5) that(6) by blast
+  then have "col P Q R" if a1 a2 a3 a4 a5 a6
+    by (smt a4_def a5_def a6_def ax_uniqueness col_def incidA_lAB incid_inter_left incid_inter_right is_a_proper_intersec_def is_pascal_def line_comm that(1) that(2) that(3) that(4) that(5) that(6))
+  show "is_pappus1 A B C A' B' C' P Q R"
+    by (simp add: \<open>\<lbrakk>a1; a2; a3; a4; a5; a6\<rbrakk> \<Longrightarrow> col P Q R\<close> a1_def a2_def a3_def a4_def a5_def a6_def is_pappus1_def)
+qed
+
+lemma pascal_pappus:
+  assumes "pascal_prop"
+  shows "is_pappus"
+  by (simp add: assms is_pappus_def pappus12 pascal_pappus1)
+
+
+
+
+
+
+
