@@ -325,7 +325,7 @@ lemma pascal_pappus:
   shows "is_pappus"
   by (simp add: assms is_pappus_def pappus12 pascal_pappus1)
 
-
+end
 
 
 
