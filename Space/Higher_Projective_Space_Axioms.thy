@@ -60,9 +60,8 @@ ax4: "\<exists>l m.\<forall>P. \<not>(incid P l \<and> incid P m)"
 
 (* 
 Biblio.:
-- Magaud, Narboux, Schrek; A Case Study in Formalizating Projective 
-Geometry in Coq: Desargues's Theorem; Computational Geometry: Theory and Applications,
-2012.
+- Nicolas Magaud, Julien Narboux, Pascal Schreck; coq-projective-geometry; code available at
+https://github.com/coq-contribs/projective-geometry.
 *)
 
 end
