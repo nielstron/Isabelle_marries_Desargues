@@ -2,6 +2,12 @@ theory Desargues_Property
   imports Main Projective_Plane_Axioms Pappus_Property Pascal_Property
 begin
 
+(* Contents:
+- We give Desargues's property, [desargues_prop], that states that if two triangles are perspective 
+from a point, then they are perspective from a line. 
+Note that some planes satisfy that property and some others don't, hence Desargues's property is
+not a theorem though it is a theorem in projective space geometry *)
+
 definition distinct3 :: "[Points, Points, Points] \<Rightarrow> bool" where
 "distinct3 A B C \<equiv> A \<noteq> B \<and> A \<noteq> C \<and> B \<noteq> C"
 
@@ -58,6 +64,9 @@ definition distinct7 ::
 (E \<noteq> F) \<and> (E \<noteq> G) \<and>
 (F \<noteq> G)"
 
+definition distinct3l :: "[Lines, Lines, Lines] \<Rightarrow> bool" where
+"distinct3l l m n \<equiv> l \<noteq> m \<and> l \<noteq> n \<and> m \<noteq> n"
+
 (* From now on we give less general statements on purpose to avoid a lot of uninteresting 
 degenerate cases, since we can hardly think of any interesting application where one would need 
 to instantiate a statement on such degenerate case, hence our statements and proofs will be more 
@@ -67,12 +76,13 @@ theorem without considering all the degenerate cases for which the statement mig
 definition are_perspective_from_point :: 
   "[Points, Points, Points, Points, Points, Points, Points] \<Rightarrow> bool" where
 "are_perspective_from_point A B C A' B' C' P \<equiv> distinct7 A B C A' B' C' P \<and> triangle A B C \<and>
-triangle A' B' C' \<and> meet_3_in (line A A') (line B B') (line C C') P"
+triangle A' B' C' \<and> distinct3l (line A A') (line B B') (line C C') \<and> 
+meet_3_in (line A A') (line B B') (line C C') P"
 
 definition are_perspective_from_line ::
   "[Points, Points, Points, Points, Points, Points] \<Rightarrow> bool" where
 "are_perspective_from_line A B C A' B' C' \<equiv> distinct6 A B C A' B' C' \<and> triangle A B C \<and>
-triangle A' B' C' \<and> 
+triangle A' B' C' \<and> line A B \<noteq> line A' B' \<and> line A C \<noteq> line A' C' \<and> line B C \<noteq> line B' C' \<and>
 col (inter (line A B) (line A' B')) (inter (line A C) (line A' C')) (inter (line B C) (line B' C'))"
 
 definition desargues_prop :: "bool" where
