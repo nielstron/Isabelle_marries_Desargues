@@ -2,6 +2,12 @@ theory Projective_Space_Axioms
   imports Main
 begin
 
+(* Contents:
+- We introduce the types of points and lines and an incidence relation between them.
+- A set of axioms for the (3-dimensional) projective space. 
+An alternative set of axioms could use planes as basic objects 
+in addition to points and lines  *)
+
 (*** The axioms of the Projective Space ***)
 
 (* One has a type of points *)
@@ -69,10 +75,9 @@ axiomatization where
 ax5: "\<forall>l1 l2 l3. distinct3_line l1 l2 l3 \<longrightarrow> (\<exists>l4 J1 J2 J3. distinct3 J1 J2 J3 \<and> 
 meet_in l1 l4 J1 \<and> meet_in l2 l4 J2 \<and> meet_in l3 l4 J3)"
 
-(* Biblio.: 
-1) Magaud, Narboux, Schrek; A Case Study in Formalizating Projective 
-Geometry in Coq: Desargues's Theorem; Computational Geometry: Theory and Applications,
-2012. 
+(* Biblio.:
+1) Nicolas Magaud, Julien Narboux, Pascal Schreck; coq-projective-geometry; code available at
+https://github.com/coq-contribs/projective-geometry
 2) Coxeter; Projective Geometry; Springer, 1987. *)
 
 
