@@ -50,9 +50,8 @@ ax3: "\<exists>A B C D. distinct4 A B C D \<and> (\<forall>l.
 (incid C l \<and> incid D l \<longrightarrow> \<not>(incid A l) \<and> \<not>(incid B l)))"
 
 (* Biblio.:
-- Magaud, Narboux, Schrek; A Case Study in Formalizating Projective 
-Geometry in Coq: Desargues's Theorem; Computational Geometry: Theory and Applications,
-2012. *)
+- Nicolas Magaud, Julien Narboux, Pascal Schreck; coq-projective-geometry; code available at
+https://github.com/coq-contribs/projective-geometry  *)
 
 
 
