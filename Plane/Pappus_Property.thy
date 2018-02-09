@@ -3,9 +3,12 @@ theory Pappus_Property
 begin
 
 (* Contents:
+
 - We give two formulations of Pappus's property for a configuration of nine points
  [is_pappus1] [is_pappus2].
+
 - We prove the equivalence of these two formulations [pappus_equiv].
+
 - We state Pappus property for a plane [is_pappus]. 
 *)
 
