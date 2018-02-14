@@ -3,9 +3,9 @@ theory Desargues_Property
 begin
 
 (* Contents:
-- We give Desargues's property, [desargues_prop], that states that if two triangles are perspective 
+- We give the Desargues property, [desargues_prop], that states that if two triangles are perspective 
 from a point, then they are perspective from a line. 
-Note that some planes satisfy that property and some others don't, hence Desargues's property is
+Note that some planes satisfy that property and some others don't, hence the Desargues property is
 not a theorem though it is a theorem in projective space geometry *)
 
 definition distinct3 :: "[Points, Points, Points] \<Rightarrow> bool" where
@@ -73,18 +73,58 @@ to instantiate a statement on such degenerate case, hence our statements and pro
 textbook-like. For the working mathematician the only thing that probably matters is the main
 theorem without considering all the degenerate cases for which the statement might still hold. *)
 
+definition desargues_config :: 
+  "[Points, Points, Points, Points, Points, Points, Points, Points, Points, Points] => bool" where
+"desargues_config A B C A' B' C' M N P R \<equiv> distinct7 A B C A' B' C' R \<and> \<not> col A B C 
+\<and> \<not> col A' B' C' \<and> distinct3l (line A A') (line B B') (line C C') \<and> 
+meet_3_in (line A A') (line B B') (line C C') R \<and> (line A B) \<noteq> (line A' B') \<and> 
+(line B C) \<noteq> (line B' C') \<and> (line A C) \<noteq> (line A' C') \<and> meet_in (line B C) (line B' C') M \<and>
+meet_in (line A C) (line A' C') N \<and> meet_in (line A B) (line A' B') P"
+
+lemma distinct7_rot_CW:
+  assumes "distinct7 A B C D E F G"
+  shows "distinct7 C A B F D E G"
+  using assms distinct7_def by auto
+
+(* Desargues configurations are stable under any rotation (i,j,k) of {1,2,3} *)
+lemma desargues_config_rot_CW:
+  assumes "desargues_config A B C A' B' C' M N P R"
+  shows "desargues_config C A B C' A' B' P M N R"
+  by (smt assms col_rot_CW desargues_config_def distinct3l_def distinct7_rot_CW line_comm meet_3_in_def meet_all_3 meet_comm)
+
+lemma desargues_config_rot_CCW:
+  assumes "desargues_config A B C A' B' C' M N P R"
+  shows "desargues_config B C A B' C' A' N P M R"
+  by (simp add: assms desargues_config_rot_CW)
+
+(* With the two following definitions we repackage the definition of a Desargues configuration in a 
+"high-level", i.e. textbook-like, way. *)
+
 definition are_perspective_from_point :: 
   "[Points, Points, Points, Points, Points, Points, Points] \<Rightarrow> bool" where
-"are_perspective_from_point A B C A' B' C' P \<equiv> distinct7 A B C A' B' C' P \<and> triangle A B C \<and>
+"are_perspective_from_point A B C A' B' C' R \<equiv> distinct7 A B C A' B' C' R \<and> triangle A B C \<and>
 triangle A' B' C' \<and> distinct3l (line A A') (line B B') (line C C') \<and> 
-meet_3_in (line A A') (line B B') (line C C') P"
+meet_3_in (line A A') (line B B') (line C C') R"
 
 definition are_perspective_from_line ::
   "[Points, Points, Points, Points, Points, Points] \<Rightarrow> bool" where
-"are_perspective_from_line A B C A' B' C' \<equiv> distinct6 A B C A' B' C' \<and> triangle A B C \<and>
-triangle A' B' C' \<and> line A B \<noteq> line A' B' \<and> line A C \<noteq> line A' C' \<and> line B C \<noteq> line B' C' \<and>
+"are_perspective_from_line A B C A' B' C' \<equiv> distinct6 A B C A' B' C' \<longrightarrow> triangle A B C \<longrightarrow>
+triangle A' B' C' \<longrightarrow> line A B \<noteq> line A' B' \<longrightarrow> line A C \<noteq> line A' C' \<longrightarrow> line B C \<noteq> line B' C' \<longrightarrow>
 col (inter (line A B) (line A' B')) (inter (line A C) (line A' C')) (inter (line B C) (line B' C'))"
 
+lemma meet_in_inter:
+  assumes "l \<noteq> m"
+  shows "meet_in l m (inter l m)"
+  by (simp add: incid_inter_left incid_inter_right meet_in_def)
+
+lemma perspective_from_point_desargues_config:
+  assumes "are_perspective_from_point A B C A' B' C' R" and "line A B \<noteq> line A' B'" and 
+    "line A C \<noteq> line A' C'" and "line B C \<noteq> line B' C'"
+  shows "desargues_config A B C A' B' C' (inter (line B C) (line B' C')) (inter (line A C) (line A' C')) 
+    (inter (line A B) (line A' B')) R"
+  by (smt are_perspective_from_point_def assms(1) assms(2) assms(3) assms(4) col_line_ext_1 desargues_config_def distinct3_def incidB_lAB inter_line_ext_2 line_comm meet_in_inter triangle_def uniq_inter)
+
+(* Now, we state Desargues property in a textbook-like form *)
 definition desargues_prop :: "bool" where
 "desargues_prop \<equiv> 
 \<forall>A B C A' B' C' P. are_perspective_from_point A B C A' B' C' P \<longrightarrow> are_perspective_from_line A B C A' B' C'"
