@@ -2,6 +2,12 @@ theory Pappus_Desargues
   imports Main Projective_Plane_Axioms Pappus_Property Pascal_Property Desargues_Property
 begin
 
+(* 
+Contents:
+- We prove Hessenberg's theorem ([hessenberg_theorem]): Pappus property implies Desargues property 
+in a projective plane. 
+*)
+
 lemma col_ABC_ABD_1:
   assumes "A \<noteq> B" and "col A B C" and "col A B D"
   shows "col B C D"
@@ -133,11 +139,12 @@ lemma lemma_1:
   assumes "desargues_config A B C A' B' C' M N P R" and "is_pappus"
   shows "col M N P \<or> incid A (line B' C') \<or> incid C' (line A B)"
 proof-
-  assume "\<not> incid A (line B' C')" and "\<not> incid C' (line A B)"
+  have "?thesis" if "incid A (line B' C') \<or> incid C' (line A B)"
+    by (simp add: that)
 (* The proof consists in three successive applications of Pappus property *)
   define Q E X F where "Q = inter (line A B) (line B' C')" and "E = inter (line A C) (line R Q)"
     and "X = inter (line A C') (line R B)" and "F = inter (line A' C') (line R Q)"
-  have "col X E M"
+  have "col X E M" if "\<not> incid A (line B' C')" and "\<not> incid C' (line A B)"
   proof-
     have f1:"distinct6 C C' R Q B A"
       by (smt Q_def \<open>\<not> incid A (line B' C')\<close> \<open>\<not> incid C' (line A B)\<close> assms(1) col_ABB col_A_B_ABl col_A_B_lAB col_line_eq_2 col_rot_CW desargues_config_def desargues_config_not_col_12 desargues_config_not_col_2 desargues_config_not_col_3 desargues_config_not_col_7 desargues_config_not_col_9 distinct6_def incidA_lAB line_comm meet_3_col_1 meet_3_col_2) 
@@ -156,7 +163,7 @@ proof-
     then show "col X E M"
       using col_def by auto
   qed
-  have "col P X F"
+  have "col P X F" if "\<not> incid A (line B' C')" and "\<not> incid C' (line A B)"
   proof-
     have f1:"distinct6 A' A R Q B' C'"
       by (smt Q_def \<open>\<not> incid A (line B' C')\<close> \<open>\<not> incid C' (line A B)\<close> assms(1) col_AAB col_A_B_ABl col_A_B_lAB col_line_eq_1 col_rot_CW desargues_config_def desargues_config_not_col_2 desargues_config_not_col_3 desargues_config_not_col_4 desargues_config_not_col_6 desargues_config_not_col_7 distinct6_def incidB_lAB meet_3_col_2 meet_3_col_3)
@@ -176,12 +183,12 @@ proof-
       show "col P X F"
         using is_pappus2_def is_pappus_def by blast
     qed
-    have "col M N P"
+    have "col M N P" if "\<not> incid A (line B' C')" and "\<not> incid C' (line A B)"
     proof-
       have f1:"Q \<noteq> C' \<and> X \<noteq> E \<and> line Q C' \<noteq> line X E"
         by (smt E_def Q_def X_def \<open>\<not> incid A (line B' C')\<close> \<open>\<not> incid C' (line A B)\<close> assms(1) col_ABB col_A_B_ABl col_A_B_lAB col_line_eq_2 col_rot_CW desargues_config_def desargues_config_not_col_10 desargues_config_not_col_2 desargues_config_not_col_8 incidB_lAB incid_C_AB line_comm meet_3_col_1 meet_3_col_2 meet_3_col_3) 
       have f2:"E \<noteq> A \<and> C' \<noteq> F \<and> line E A \<noteq> line C' F"
-        by (smt F_def Q_def X_def \<open>Q \<noteq> C' \<and> X \<noteq> E \<and> line Q C' \<noteq> line X E\<close> \<open>col X E M\<close> assms(1) ax_uniqueness col_A_B_ABl col_A_B_lAB col_def col_line_eq_1 desargues_config_def desargues_config_not_col_10 desargues_config_not_col_2 desargues_config_not_col_3 incidA_lAB incid_inter_right meet_3_col_3 meet_all_3 meet_in_def)
+        by (smt E_def F_def Q_def X_def \<open>\<lbrakk>\<not> incid A (line B' C'); \<not> incid C' (line A B)\<rbrakk> \<Longrightarrow> col X E M\<close> assms(1) ax_uniqueness col_def desargues_config_def desargues_config_not_col_10 desargues_config_not_col_3 f1 incidA_lAB incidB_lAB incid_inter_left incid_inter_right meet_in_def that(1))
       have f3:"Q \<noteq> A \<and> X \<noteq> F \<and> line Q A \<noteq> line X F"
         by (smt F_def Q_def X_def \<open>\<not> incid A (line B' C')\<close> \<open>\<not> incid C' (line A B)\<close> assms(1) ax_uniqueness col_def desargues_config_def desargues_config_not_col_10 desargues_config_not_col_2 desargues_config_not_col_7 incidA_lAB incidB_lAB incid_inter_left incid_inter_right meet_3_col_2 meet_3_col_3)
       have f4:"col Q E F"
@@ -189,14 +196,173 @@ proof-
       have f5:"col X C' A"
         using X_def col_2cycle col_A_B_ABl col_rot_CW by blast
       have f6:"is_a_intersec M Q C' X E"
-        using Q_def \<open>col X E M\<close> assms(1) col_def desargues_config_def incidB_lAB incid_inter_right is_a_intersec_def meet_in_def by auto
+        by (metis Q_def \<open>\<lbrakk>\<not> incid A (line B' C'); \<not> incid C' (line A B)\<rbrakk> \<Longrightarrow> col X E M\<close> assms(1) col_ABB col_A_B_lAB col_def col_line_eq_1 desargues_config_def incidB_lAB is_a_intersec_def meet_in_def that(1) that(2))
       have f7:"is_a_intersec N E A C' F"
         by (metis E_def F_def assms(1) ax_uniqueness col_rot_CW desargues_config_def f2 incidA_lAB incidB_lAB incid_inter_left is_a_intersec_def meet_col_1 meet_col_2)
       have f8:"is_a_intersec P Q A X F"
-        by (smt Q_def \<open>col P X F\<close> assms(1) col_AAB col_A_B_ABl col_line_eq_2 desargues_config_def f3 incidA_lAB inter_is_a_intersec line_comm meet_in_def uniq_inter)
+        by (metis Q_def \<open>\<lbrakk>\<not> incid A (line B' C'); \<not> incid C' (line A B)\<rbrakk> \<Longrightarrow> col P X F\<close> assms(1) ax_uniqueness col_rot_CW desargues_config_def f3 incidA_lAB incidB_lAB incid_inter_left is_a_intersec_def meet_col_2 meet_comm that(1) that(2))
       from f1 and f2 and f3 and f4 and f5 and f6 and f7 and f8 and assms(2) show "col M N P"
         using is_pappus2_def is_pappus_def by blast
     qed
+    show "col M N P \<or> incid A (line B' C') \<or> incid C' (line A B)"
+      using \<open>\<lbrakk>\<not> incid A (line B' C'); \<not> incid C' (line A B)\<rbrakk> \<Longrightarrow> col M N P\<close> by auto
+qed
+
+corollary corollary_1:
+  assumes "desargues_config A B C A' B' C' M N P R" and "is_pappus"
+  shows "col M N P \<or> ((incid A (line B' C') \<or> incid C' (line A B)) \<and> 
+  (incid C (line A' B') \<or> incid B' (line A C)) \<and> (incid B (line A' C') \<or> incid A' (line B C)))"
+  by (metis assms(1) assms(2) col_rot_CW desargues_config_rot_CCW lemma_1 line_comm)
+
+definition triangle_circumscribes_triangle :: "[Points, Points, Points, Points, Points, Points] \<Rightarrow> bool" where
+"triangle_circumscribes_triangle A' B' C' A B C \<equiv> incid A (line B' C') \<and> incid C (line A' B') \<and>
+incid B (line A' C')"
+
+lemma lemma_2:
+  assumes "desargues_config A B C A' B' C' M N P R" and "incid A (line B' C') \<or> incid C' (line A B)" 
+    and "incid C (line A' B') \<or> incid B' (line A C)" and "incid B (line A' C') \<or> incid A' (line B C)"
+  shows "col M N P \<or> triangle_circumscribes_triangle A B C A' B' C' \<or> triangle_circumscribes_triangle A' B' C' A B C"
+  by (smt assms(1) assms(2) assms(3) assms(4) ax_uniqueness col_def desargues_config_not_col_1 desargues_config_not_col_11 desargues_config_not_col_12 desargues_config_not_col_2 desargues_config_not_col_3 desargues_config_not_col_9 incidA_lAB incidB_lAB triangle_circumscribes_triangle_def)
+
+lemma lemma_3:
+  assumes "is_pappus" and "desargues_config A B C A' B' C' M N P R" and 
+    "triangle_circumscribes_triangle A' B' C' A B C"
+  shows "col M N P"
+proof-
+  define S T where "S = inter (line C' P) (line R A)" and "T = inter (line C' P) (line R B)"
+(* The collinearity of M N P follows from three applications of Pappus property *)
+  have "col N S B'"
+  proof-
+    have f1:"distinct6 R C C' P B A"
+      by (smt assms(2) col_AAB col_line_eq_2 col_rot_CW desargues_config_def desargues_config_not_col_1 desargues_config_not_col_12 desargues_config_not_col_2 desargues_config_not_col_5 desargues_config_not_col_7 desargues_config_not_col_8 desargues_config_not_col_9 distinct6_def line_comm meet_3_col_1 meet_3_col_2 meet_col_1 meet_col_2)
+    have f2:"col R C C'"
+      using assms(2) col_rot_CW desargues_config_def meet_3_col_3 by blast
+    have f3:"col P B A"
+      by (metis assms(2) col_rot_CW desargues_config_def line_comm meet_col_1)
+    have f4:"is_a_intersec B' R B P C"
+      by (metis assms(2) assms(3) col_def desargues_config_def incidB_lAB is_a_intersec_def meet_3_col_2 meet_in_def triangle_circumscribes_triangle_def)
+    have f5:"is_a_intersec S R A P C'"
+      using S_def col_2cycle inter_is_a_intersec is_a_intersec_def by auto
+    have "line B C' = line A' C'"
+      by (metis \<open>distinct6 R C C' P B A\<close> assms(3) ax_uniqueness distinct6_def incidA_lAB incidB_lAB triangle_circumscribes_triangle_def)
+    then have f6:"is_a_intersec N C A B C'"
+      by (metis assms(2) desargues_config_def inter_is_a_intersec line_comm meet_in_def uniq_inter)
+    from f1 and f2 and f3 and f4 and f5 and f6 and assms(1) have "col B' N S"
+      using is_pappus2_def is_pappus_def by blast
+    then show "col N S B'"
+      by (simp add: col_rot_CW)
+  qed
+  have "col M T A'"
+  proof-
+    have f1:"distinct6 R C C' P A B"
+      by (smt assms(2) col_ABA col_line_eq_2 col_rot_CW desargues_config_def desargues_config_not_col_1 desargues_config_not_col_12 desargues_config_not_col_2 desargues_config_not_col_5 desargues_config_not_col_7 desargues_config_not_col_8 desargues_config_not_col_9 distinct6_def line_comm meet_3_col_1 meet_3_col_2 meet_col_1 meet_col_2)
+    have f2:"col R C C'"
+      using assms(2) col_rot_CW desargues_config_def meet_3_col_3 by blast
+    have f3:"col P A B"
+      using assms(2) col_rot_CW desargues_config_def meet_col_1 by blast
+    have f4:"line P C = line A' B'"
+      by (metis \<open>distinct6 R C C' P A B\<close> assms(2) assms(3) ax_uniqueness desargues_config_def distinct6_def incidA_lAB incidB_lAB meet_in_def triangle_circumscribes_triangle_def)
+    have f5:"line R A = line A A'"
+      by (metis \<open>distinct6 R C C' P A B\<close> assms(2) col_AAB col_line_eq_2 desargues_config_def desargues_config_not_col_1 distinct6_def line_comm meet_3_col_1)
+    from f4 and f5 have f6:"is_a_intersec A' R A P C"
+      by (metis col_def incidA_lAB incidB_lAB is_a_intersec_def)
+    have "line A C' = line B' C'"
+      by (metis assms(3) ax_uniqueness distinct6_def f1 incidA_lAB incidB_lAB triangle_circumscribes_triangle_def)
+    then have f7:"is_a_intersec M C B A C'"
+      by (metis assms(2) col_rot_CW desargues_config_def is_a_intersec_def line_comm meet_col_1 meet_col_2)
+    have f8:"is_a_intersec T R B P C'"
+      by (metis T_def distinct6_def f1 inter_comm_line_line_comm inter_is_a_intersec line_comm)
+    from f1 and f2 and f3 and f6 and f7 and f8 and assms(1) have "col A' M T"
+      using is_pappus2_def is_pappus_def by blast
+    thus "col M T A'"
+      by (simp add: col_rot_CW)
+  qed
+  then show "col M N P"
+  proof-
+    have f1:"S \<noteq> T \<and> B \<noteq> A \<and> line S T \<noteq> line B A"
+      by (smt T_def \<open>col N S B'\<close> assms(2) assms(3) ax_uniqueness col_AAB col_line_eq_2 col_rot_CW desargues_config_def desargues_config_not_col_10 desargues_config_not_col_7 desargues_config_not_col_9 incidB_lAB incid_inter_left incid_inter_right line_comm meet_3_col_2 meet_3_col_3 meet_col_1 meet_col_2 triangle_circumscribes_triangle_def)
+    have f2:"A \<noteq> B' \<and> T \<noteq> A' \<and> line A B' \<noteq> line T A'"
+      by (smt T_def assms(2) col_def desargues_config_def desargues_config_not_col_1 desargues_config_not_col_9 incidB_lAB incid_C_AB incid_inter_left line_comm meet_in_def)
+    have f3:"S \<noteq> B' \<and> B \<noteq> A'"
+      by (smt S_def assms(2) assms(3) ax_uniqueness col_A_B_ABl col_line_eq_2 col_rot_CW desargues_config_def desargues_config_not_col_2 desargues_config_not_col_5 desargues_config_not_col_7 incidA_lAB incidB_lAB incid_inter_right inter_comm line_comm meet_3_col_2 meet_in_def triangle_circumscribes_triangle_def)
+    then have f4:"line S B' \<noteq> line B A'"
+      by (metis assms(2) col_def desargues_config_not_col_5 incidA_lAB incidB_lAB)
+    have f5:"col S A A'"
+      by (metis S_def assms(2) col_ABC_ABD_1 col_A_B_lAB col_rot_CW desargues_config_def desargues_config_not_col_8 meet_3_col_1 meet_3_col_3)
+    have f6:"col B T B'"
+      by (metis T_def assms(2) col_def col_line_eq_2 desargues_config_def desargues_config_not_col_10 incidB_lAB incid_inter_right line_comm meet_3_col_2 meet_3_col_3)
+    have f7:"is_a_intersec P S T B A"
+      by (metis S_def T_def assms(2) col_ABC_ABD_1 col_A_B_ABl col_def desargues_config_def incidA_lAB incidB_lAB is_a_intersec_def meet_in_def)
+    have f8:"is_a_intersec M A B' T A'"
+      by (metis \<open>col M T A'\<close> assms(2) assms(3) col_rot_CW desargues_config_def f2 incidA_lAB incidB_lAB is_a_intersec_def meet_col_2 triangle_circumscribes_triangle_def uniq_inter)
+    have f9:"is_a_intersec N S B' B A'"
+      using \<open>col N S B'\<close> assms(2) assms(3) col_def desargues_config_def incidA_lAB is_a_intersec_def meet_in_def triangle_circumscribes_triangle_def by auto
+    from f1 and f2 and f3 and f4 and f5 and f6 and f7 and f8 and f9 and assms(1) have "col P M N"
+      using is_pappus2_def is_pappus_def by blast
+    thus "col M N P"
+      by (simp add: col_rot_CW)
+  qed
+qed
+
+theorem pappus_desargues:
+  assumes "is_pappus" and "desargues_config A B C A' B' C' M N P R"
+  shows "col M N P"
+proof-
+  have f1:"col M N P \<or> ((incid A (line B' C') \<or> incid C' (line A B)) \<and> 
+  (incid C (line A' B') \<or> incid B' (line A C)) \<and> (incid B (line A' C') \<or> incid A' (line B C)))"
+    using assms(1) assms(2) corollary_1 by auto
+  have f2:"col M N P \<or> triangle_circumscribes_triangle A B C A' B' C' \<or> triangle_circumscribes_triangle A' B' C' A B C"
+    if "(incid A (line B' C') \<or> incid C' (line A B)) \<and> (incid C (line A' B') \<or> incid B' (line A C)) 
+    \<and> (incid B (line A' C') \<or> incid A' (line B C))"
+    using assms(2) lemma_2 that by auto
+  have f3:"col M N P" if "triangle_circumscribes_triangle A' B' C' A B C"
+    using assms(1) assms(2) lemma_3 that by auto
+  have f4:"col M N P" if "triangle_circumscribes_triangle A B C A' B' C'"
+  proof-
+    have "desargues_config A' B' C' A B C M N P R"
+    proof-
+      have f1:"distinct7 A' B' C' A B C R" using assms(2) desargues_config_def distinct7_def by auto
+      have f2:"\<not> col A' B' C'"
+        using assms(2) desargues_config_def by blast
+      have f3:"\<not> col A B C"
+        using assms(2) desargues_config_def by blast
+      have f4:"distinct3l (line A' A) (line B' B) (line C' C)"
+        by (metis assms(2) desargues_config_def line_comm)
+      have f5:"meet_3_in (line A' A) (line B' B) (line C' C) R"
+        by (metis assms(2) desargues_config_def line_comm)
+      have f6:"(line A' B') \<noteq> (line A B) \<and> (line B' C') \<noteq> (line B C) \<and> (line A' C') \<noteq> (line A C)"
+        using assms(2) desargues_config_def by auto
+      have f7:"meet_in (line B' C') (line B C) M \<and> meet_in (line A' C') (line A C) N \<and> 
+      meet_in (line A' B') (line A B) P"
+        using assms(2) desargues_config_def meet_comm by blast
+      from f1 and f2 and f3 and f4 and f5 and f6 and f7 show "desargues_config A' B' C' A B C M N P R"
+        by (simp add: desargues_config_def)
+    qed
+    then show "col M N P"
+      using assms(1) lemma_3 that by blast
+  qed
+  from f1 and f2 and f3 and f4 show "col M N P"
+    by blast
+qed
+
+theorem hessenberg_thereom:
+  assumes "is_pappus"
+  shows "desargues_prop"
+  by (smt are_perspective_from_line_def assms col_def desargues_prop_def pappus_desargues perspective_from_point_desargues_config)
+
+corollary pascal_desargues:
+  assumes "pascal_prop"
+  shows "desargues_prop"
+  by (simp add: assms hessenberg_thereom pascal_pappus)
+
+end
+
+
+    
+
+
+
+
 
 
 
