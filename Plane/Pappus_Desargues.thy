@@ -355,6 +355,12 @@ corollary pascal_desargues:
   shows "desargues_prop"
   by (simp add: assms hessenberg_thereom pascal_pappus)
 
+(*
+References:
+- M. Bezem and D. Hendriks, On the Mechanization of the Proof of Hessenberg's Theorem in Coherent Logic,
+J. of Automated Reasoning 40 (1), 2008, pp.61-85.
+*)
+
 end
 
 
