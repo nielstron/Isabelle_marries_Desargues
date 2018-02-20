@@ -19,10 +19,6 @@ typedecl "Lines"
 (* One has an incidence relation between points and lines *)
 consts incid :: "Points \<Rightarrow> Lines \<Rightarrow> bool"
 
-(* The incidence relation is decidable *)
-axiomatization where
-incid_dec: "\<forall>P l. incid P l \<or> \<not>(incid P l)"
-
 (* Ax1: Any two (distinct) points lie on a (unique) line *)
 axiomatization where
 ax1: "\<forall>P Q. \<exists>l. incid P l \<and> incid Q l"
