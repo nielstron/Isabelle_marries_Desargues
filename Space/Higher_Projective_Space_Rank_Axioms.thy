@@ -21,7 +21,15 @@ rk_ax_singleton: "\<forall>P. rk {P} \<ge> 1" and
 rk_ax_couple: "\<forall>P Q. P \<noteq> Q \<longrightarrow> rk {P,Q} \<ge> 2" and
 rk_ax_pasch: "\<forall>A B C D. rk {A,B,C,D} \<le> 3 \<longrightarrow> (\<exists>J. rk {A,B,J} = 2 \<and> rk {C,D,J} = 2)" and
 rk_axiom_3_points: "\<forall> A B. \<exists>C. rk {A,B,C} = 2 \<and> rk {B,C} = 2 \<and> rk {A,C} = 2" and
-rk_ax_dim: "\<exists>A B C D. rk {A B C D} \<ge> 4"
+rk_ax_dim: "\<exists>A B C D. rk {A,B,C,D} \<ge> 4"
+
+(*
+References:
+- Nicolas Magaud, Julien Narboux, Pascal Schreck, "A Case Study in Formalizing Projective Geometry
+in Coq: Desargues Theorem", Computational Geometry: Theory and Applications, 45 (2012) 406-424.
+*)
+
+end
 
 
 
