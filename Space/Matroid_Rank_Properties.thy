@@ -47,14 +47,7 @@ to two different planes *)
 lemma rk_ax_dim_alt: "\<exists>A B C D. \<forall>M. rk {A,B,M} \<noteq> 2 \<or> rk {C,D,M} \<noteq> 2"
 proof-
   obtain A B C D where f1:"rk {A,B,C,D} \<ge> 4"
-  proof-
-    assume a1:"\<And>A B C D. 4 \<le> rk {A, B, C, D} \<Longrightarrow> thesis"
-    then show "thesis"
-    proof-
-      have "\<exists>X Y Z W. rk {X,Y,Z,W} \<ge> 4" by (simp add: rk_ax_dim)
-      thus "thesis" using a1 by blast
-    qed
-  qed
+    using rk_ax_dim by auto
   have "\<forall>M. rk {A,B,M} \<noteq> 2 \<or> rk {C,D,M} \<noteq> 2"
   proof
     fix M
@@ -72,6 +65,75 @@ proof-
   thus "\<exists>A B C D. \<forall>M. rk {A, B, M} \<noteq> 2 \<or> rk {C, D, M} \<noteq> 2"
     by blast
 qed
+
+lemma rk_empty: "rk {} = 0"
+proof-
+  have "rk {} \<ge> 0" by simp
+  have "rk {} \<le> 0"
+    by (metis card.empty matroid_ax_1b)
+  thus "rk {} = 0" by blast
+qed
+
+lemma matroid_ax_2_alt: "rk X \<le> rk (X \<union> {x}) \<and> rk (X \<union> {x}) \<le> rk X + 1"
+proof
+  have "X \<subseteq> X \<union> {x}" by auto
+  thus "rk X \<le> rk (X \<union> {x})"
+    by (simp add: matroid_ax_2)
+  have "rk {x} \<le> 1"
+    by (metis One_nat_def card.empty card_Suc_eq insert_absorb insert_not_empty matroid_ax_1b)
+  thus "rk (X \<union> {x}) \<le> rk X + 1"
+    by (metis add_leD1 le_antisym matroid_ax_3 rk_ax_singleton)
+qed
+
+lemma matroid_ax_3_alt': "rk (X \<union> {y}) = rk (X \<union> {z}) \<longrightarrow> rk (X \<union> {z}) = rk X \<longrightarrow> rk X = rk (X \<union> {y,z})"
+proof-
+  have i1:"rk X \<le> rk (X \<union> {y,z})"
+    using matroid_ax_2 by blast
+  have i2:"rk X \<ge> rk (X \<union> {y,z})" if "rk (X \<union> {y}) = rk (X \<union> {z})" and "rk (X \<union> {z}) = rk X"
+  proof-
+    have "(X \<union> {y}) \<union> (X \<union> {z}) = X \<union> {y,z}" by blast
+    then have "rk (X \<union> {y,z}) + rk X \<le> rk X + rk X"
+      by (metis \<open>rk (X \<union> {y}) = rk (X \<union> {z})\<close> \<open>rk (X \<union> {z}) = rk X\<close> inf_sup_ord(3) le_inf_iff matroid_ax_3_alt)
+    thus "rk (X \<union> {y,z}) \<le> rk X" by simp
+  qed
+  thus "rk (X \<union> {y}) = rk (X \<union> {z}) \<longrightarrow> rk (X \<union> {z}) = rk X \<longrightarrow> rk X = rk (X \<union> {y, z})"
+    using antisym i1 by blast
+qed
+
+lemma rk_ext:
+  assumes "rk X \<le> 3"
+  shows "\<exists>P. rk(X \<union> {P}) = rk X + 1"
+proof-
+  obtain A B C D where "rk {A,B,C,D} \<ge> 4"
+    using rk_ax_dim by auto
+  have f1:"rk (X \<union> {A, B, C, D}) \<ge> 4"
+    by (metis Un_upper2 \<open>4 \<le> rk {A, B, C, D}\<close> matroid_ax_2 sup.coboundedI2 sup.orderE)
+  have "rk (X \<union> {A, B, C, D}) = rk X" if "rk(X \<union> {A}) = rk(X \<union> {B})" and "rk(X \<union> {B}) = rk(X \<union> {C})" 
+    and "rk(X \<union> {C}) = rk(X \<union> {D})" and "rk(X \<union> {D}) = rk X"
+    using matroid_ax_3_alt' that(1) that(2) that(3) that(4) by auto
+  then have f2:"rk (X \<union> {A, B, C, D}) \<le> 3" if "rk(X \<union> {A}) = rk(X \<union> {B})" and "rk(X \<union> {B}) = rk(X \<union> {C})" 
+    and "rk(X \<union> {C}) = rk(X \<union> {D})" and "rk(X \<union> {D}) = rk X"
+    using assms that(1) that(2) that(3) that(4) by linarith
+  from f1 and f2 have "false" if "rk(X \<union> {A}) = rk(X \<union> {B})" and "rk(X \<union> {B}) = rk(X \<union> {C})" 
+    and "rk(X \<union> {C}) = rk(X \<union> {D})" and "rk(X \<union> {D}) = rk X"
+    using that(1) that(2) that(3) that(4) by linarith
+  then have "rk (X \<union> {A}) = rk X + 1 \<or> rk (X \<union> {B}) = rk X + 1 \<or> rk (X \<union> {C}) = rk X + 1 \<or> 
+    rk (X \<union> {D}) = rk X + 1"
+    by (smt One_nat_def Suc_le_eq Suc_numeral Un_upper2 \<open>4 \<le> rk {A, B, C, D}\<close> \<open>\<lbrakk>rk (X \<union> {A}) = rk (X \<union> {B}); rk (X \<union> {B}) = rk (X \<union> {C}); rk (X \<union> {C}) = rk (X \<union> {D}); rk (X \<union> {D}) = rk X\<rbrakk> \<Longrightarrow> rk (X \<union> {A, B, C, D}) = rk X\<close> add.right_neutral add_Suc_right assms linorder_antisym_conv1 matroid_ax_2 matroid_ax_2_alt not_less semiring_norm(2) semiring_norm(8) sup.coboundedI2 sup.orderE)
+  thus "\<exists>P . rk (X \<union> {P}) = rk X + 1" by blast
+qed
+
+(*
+References:
+- Nicolas Magaud, Julien Narboux, Pascal Schreck, "A Case Study in Formalizing Projective Geometry
+in Coq: Desargues Theorem", Computational Geometry: Theory and Applications, 45 (2012) 406-424.
+*)
+
+end
+
+
+
+
 
 
 
