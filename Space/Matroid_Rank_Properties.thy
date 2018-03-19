@@ -123,6 +123,34 @@ proof-
   thus "\<exists>P . rk (X \<union> {P}) = rk X + 1" by blast
 qed
 
+lemma rk_singleton : "\<forall>P. rk {P} = 1"
+proof
+  fix P
+  have f1:"rk {P} \<le> 1"
+    by (metis One_nat_def card.empty card_Suc_eq insert_absorb insert_not_empty matroid_ax_1b)
+  have f2:"rk {P} \<ge> 1"
+    using rk_ax_singleton by auto
+  from f1 and f2 show "rk {P} = 1"
+    using antisym by blast
+qed
+
+lemma rk_singleton_bis :
+  assumes "A = B"
+  shows "rk {A, B} = 1"
+  by (simp add: assms rk_singleton)
+
+lemma rk_couple :
+  assumes "A \<noteq> B"
+  shows "rk {A, B} = 2"
+proof-
+  have f1:"rk {A, B} \<le> 2"
+    by (metis insert_is_Un matroid_ax_2_alt one_add_one rk_singleton)
+  have f2:"rk {A, B} \<ge> 2"
+    by (simp add: assms rk_ax_couple)
+  from f1 and f2 show "?thesis"
+    by (simp add: f1 le_antisym)
+qed
+
 (*
 References:
 - Nicolas Magaud, Julien Narboux, Pascal Schreck, "A Case Study in Formalizing Projective Geometry
