@@ -28,7 +28,7 @@ ax1_uniqueness: "\<forall>P M k l.
 (incid P k) \<longrightarrow> (incid M k) \<longrightarrow> (incid P l) \<longrightarrow> (incid M l) \<longrightarrow> (P = M) \<or> (k = l)"
 
 definition distinct4 :: "points \<Rightarrow> points \<Rightarrow> points \<Rightarrow> points \<Rightarrow> bool" where
-"distinct4 A B C D \<equiv> (A \<noteq> B) \<and> (A \<noteq> C) \<and> (A \<noteq> D)\<and> (B \<noteq> C) \<and> (B \<noteq> D) \<and> (C \<noteq> D)"
+"distinct4 A B C D \<equiv> (A \<noteq> B) \<and> (A \<noteq> C) \<and> (A \<noteq> D) \<and> (B \<noteq> C) \<and> (B \<noteq> D) \<and> (C \<noteq> D)"
 
 (* Ax2: If A B C D are four distinct points such that AB meets CD, then AC meets BD.
 Sometimes this is called Pasch's axiom, but according to Wikipedia it is misleading
