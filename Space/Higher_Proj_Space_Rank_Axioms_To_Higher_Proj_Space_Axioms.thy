@@ -25,15 +25,30 @@ fun fst_pt :: "Lines \<Rightarrow> points" where
 fun snd_pt :: "Lines \<Rightarrow> points" where
 "snd_pt (line A B) = B"
 
+(* possible alternative typedef lines = "{(a::Points,b::Points). a \<noteq> b}" then use a quotient *)
+
 typedef lines = "{l:: Lines. fst_pt l \<noteq> snd_pt l}"
 proof-
   obtain A B where "rk {A,B} = 2"
-    using rk_axiom_3_points by blast
+    using rk_ax_3_pts by blast
   then have "A \<noteq> B"
     by (metis One_nat_def card.empty card_Suc_eq insert_absorb insert_absorb2 insert_not_empty matroid_ax_1b numeral_le_one_iff semiring_norm(69))
   thus "?thesis"
     by (metis (mono_tags) fst_pt.simps mem_Collect_eq snd_pt.simps)
 qed
+
+(* print_theorems
+
+find_theorems "_::Lines" name:induct
+find_theorems "_::lines" 
+
+
+lemma "P (x::lines)"
+proof (induction x)
+  case (Abs_lines y)
+  then show ?case apply (induction y rule:Lines.induct)
+qed
+*)  
 
 definition fst :: "lines \<Rightarrow> points" where
 "fst l \<equiv> fst_pt (Rep_lines l)"
@@ -120,7 +135,7 @@ qed
 
 lemma ax1_uniqueness : "\<forall>P Q k l. 
 (incid P k) \<longrightarrow> (incid Q k) \<longrightarrow> (incid P l) \<longrightarrow> (incid Q l) \<longrightarrow> (P = Q) \<or> (line_eq k l)"
-proof(rule allI, rule allI, rule allI, rule allI, rule impI, rule impI, rule impI, rule impI)
+proof((rule allI)+, (rule impI)+)
   fix P Q k l
   assume "incid P k" and "incid Q k" and "incid P l" and "incid Q l"
   have f1:"line_eq k l" if "P \<noteq> Q"
@@ -140,8 +155,11 @@ proof(rule allI, rule allI, rule allI, rule allI, rule impI, rule impI, rule imp
   from f1 show "P = Q \<or> line_eq k l" by auto
 qed
 
+definition distinct3 :: "points => points => points => bool" where
+"distinct3 A B C \<equiv> (A \<noteq> B) \<and> (A \<noteq> C) \<and> (B \<noteq> C)"
+
 definition distinct4 :: "points \<Rightarrow> points \<Rightarrow> points \<Rightarrow> points \<Rightarrow> bool" where
-"distinct4 A B C D \<equiv> (A \<noteq> B) \<and> (A \<noteq> C) \<and> (A \<noteq> D) \<and> (B \<noteq> C) \<and> (B \<noteq> D) \<and> (C \<noteq> D)"
+"distinct4 A B C D \<equiv> distinct3 A B C \<and> (A \<noteq> D) \<and> (B \<noteq> D) \<and> (C \<noteq> D)"
 
 lemma rk_lines_inter :
   assumes "incid P k" and "incid P l"
@@ -152,20 +170,19 @@ proof-
   have f2:"rk {fst l, snd l, P} \<le> 2"
     using assms(2) incid_def by auto
   have f3:"rk {fst k, snd k, fst l, snd l, P} + rk {P} \<le> rk {fst k, snd k, P} + rk {fst l, snd l, P}" 
-    using matroid_ax_3_alt[of "{fst k, snd k, P}" "{fst l, snd l, P}" "{P}"] sorry
-    by (smt Int_commute Int_insert_right Un_commute Un_insert_left inf_absorb2 insert_subset matroid_ax_3_alt subset_insertI sup_inf_absorb)
+    using matroid_ax_3_alt
+    by (smt Un_empty Un_insert_left Un_insert_right all_not_in_conv insert_absorb2 insert_iff insert_inter_insert subsetI)
   then have "rk {fst k, snd k, fst l, snd l, P} \<le> 3" 
     using f1 f2 by (simp add: rk_singleton)
   thus "rk {fst k, snd k, fst l, snd l} \<le> 3" using matroid_ax_2
     by (metis insert_commute order_trans subset_insertI)
 qed
 
-lemma ax_2 : "\<forall>A B C D lAB lCD lAC lBD. distinct4 A B C D \<longrightarrow> (incid A lAB \<and> incid B lAB) 
+lemma ax_2 : "\<forall>A B C D lAB lCD lAC lBD. distinct4 A B C D \<longrightarrow> (incid A lAB \<and> incid B lAB)
 \<longrightarrow> (incid C lCD \<and> incid D lCD) \<longrightarrow> (incid A lAC \<and> incid C lAC) \<longrightarrow> 
 (incid B lBD \<and> incid D lBD) \<longrightarrow> (\<exists>I.(incid I lAB \<and> incid I lCD)) \<longrightarrow> 
-(\<exists>J.(incid J lAC \<and> incid J lBD))"
-proof(rule allI, rule allI, rule allI, rule allI, rule allI, rule allI, rule allI, rule allI, 
-rule impI, rule impI, rule impI, rule impI, rule impI, rule impI)
+(\<exists>J.(incid J lAC \<and> incid J lBD))" sorry
+(* proof((rule allI)+, (rule impI)+)
   fix A B C D lAB lCD lAC lBD
   assume "distinct4 A B C D" and "incid A lAB \<and> incid B lAB" and "incid C lCD \<and> incid D lCD" and
 "incid A lAC \<and> incid C lAC" and "incid B lBD \<and> incid D lBD" and "\<exists>I. incid I lAB \<and> incid I lCD"
@@ -200,6 +217,55 @@ rule impI, rule impI, rule impI, rule impI, rule impI, rule impI)
     have "rk {fst lAB, snd lAB, fst lAC, snd lAC} \<le> 3"
       using \<open>incid A lAB \<and> incid B lAB\<close> \<open>incid A lAC \<and> incid C lAC\<close> rk_lines_inter by blast
     then have "rk {fst lAB, snd lAB, fst lAC, snd lAC, A} \<le> 3"
+*)
+
+lemma ax3 : "\<forall>l.\<exists>A B C. distinct3 A B C \<and> incid A l \<and> incid B l \<and> incid C l"
+proof
+  fix l
+  obtain P where a1:"rk {fst l, snd l, P} = 2" and a2:"rk {snd l, P} = 2" and a3:"rk {fst l, P} = 2" 
+    using rk_ax_3_pts by auto
+  have f1:"distinct3 (fst l) (snd l) P"
+    by (metis a2 a3 distinct3_def insert_absorb2 line_eq_refl line_eq_rk numeral_eq_iff numerals(1) rk_singleton_bis semiring_norm(85))
+  have f2:"incid (fst l) l"
+    by (metis distinct3_def eq_iff f1 incid_def insert_commute rk_triple_rep)
+  have f3:"incid (snd l) l"
+    using distinct3_def f1 incid_def rk_triple_rep by auto
+  have f4:"incid P l"
+    by (simp add: a1 incid_def)
+  show "\<exists>A B C. distinct3 A B C \<and> incid A l \<and> incid B l \<and> incid C l" 
+    using f1 f2 f3 f4 by blast
+qed
+
+lemma ax4 : "\<exists>l m.\<forall>P. \<not>(incid P l \<and> incid P m)"
+proof-
+  obtain A B C D where "rk {A, B, C, D} \<ge> 4"
+    using rk_ax_dim by auto
+  define l m where "l = Abs_lines (line A B)" and "m = Abs_lines (line C D)"
+  fix P
+  have f1:"rk {A, B, P} \<le> 2" and f2:"rk {C, D, P} \<le> 2" if "incid P l" and "incid P m"
+    apply(smt Abs_lines_inverse Higher_Proj_Space_Rank_Axioms_To_Higher_Proj_Space_Axioms.fst_def Higher_Proj_Space_Rank_Axioms_To_Higher_Proj_Space_Axioms.snd_def fst_pt.simps incid_rk insert_absorb2 l_def linear mem_Collect_eq numeral_le_one_iff rk_couple rk_singleton_bis semiring_norm(69) snd_pt.simps that(1))
+    by (smt Abs_lines_inverse Higher_Proj_Space_Rank_Axioms_To_Higher_Proj_Space_Axioms.fst_def Higher_Proj_Space_Rank_Axioms_To_Higher_Proj_Space_Axioms.snd_def fst_pt.simps incid_rk insert_absorb2 linear m_def mem_Collect_eq numeral_le_one_iff rk_singleton_bis rk_triple_rep semiring_norm(69) snd_pt.simps that(2)) 
+  have f3:"rk {A, B, C, D, P} + rk {P} \<le> rk {A, B, P} + rk {C, D, P}"
+    using matroid_ax_3_alt[of "{P}" "{A, B, P}" "{C, D, P}"]
+    by (simp add: insert_commute)
+  from f1 and f2 and f3 have "rk {A, B, C, D, P} \<le> 3" if "incid P l" and "incid P m"
+    by (simp add: rk_singleton that(1) that(2))
+  then have "rk {A, B, C, D} \<le> 3" if "incid P l" and "incid P m"
+    using matroid_ax_2
+    by (smt Abs_lines_inverse Higher_Proj_Space_Rank_Axioms_To_Higher_Proj_Space_Axioms.fst_def Higher_Proj_Space_Rank_Axioms_To_Higher_Proj_Space_Axioms.snd_def One_nat_def add_Suc_right add_leD1 fst_pt.simps insert_absorb2 insert_is_Un l_def m_def matroid_ax_3 mem_Collect_eq numeral_2_eq_2 numeral_3_eq_3 one_add_one rk_lines_inter rk_singleton_bis rk_triple_rep snd_pt.simps that(1) that(2)) 
+  then have "\<forall>P. \<not>(incid P l \<and> incid P m)"
+    using \<open>4 \<le> rk {A, B, C, D}\<close> l_def m_def
+    by (smt Abs_lines_inverse Higher_Proj_Space_Rank_Axioms_To_Higher_Proj_Space_Axioms.fst_def Higher_Proj_Space_Rank_Axioms_To_Higher_Proj_Space_Axioms.snd_def One_nat_def Suc_le_eq Suc_numeral add_Suc_right add_leD1 fst_pt.simps insert_absorb2 insert_is_Un matroid_ax_3 mem_Collect_eq not_le numeral_2_eq_2 numeral_3_eq_3 one_add_one rk_lines_inter rk_singleton rk_triple_rep semiring_norm(2) semiring_norm(8) snd_pt.simps)
+  thus "\<exists>l m.\<forall>P. \<not>(incid P l \<and> incid P m)" by auto
+qed
+
+end
+
+
+
+
+
+
 
 
 
