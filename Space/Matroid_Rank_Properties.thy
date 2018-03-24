@@ -151,6 +151,9 @@ proof-
     by (simp add: f1 le_antisym)
 qed
 
+lemma rk_triple_le : "rk {A, B, C} \<le> 3"
+  by (metis Suc_numeral Un_commute insert_absorb2 insert_is_Un linear matroid_ax_2_alt numeral_2_eq_2 numeral_3_eq_3 numeral_le_one_iff numeral_plus_one rk_couple rk_singleton semiring_norm(70))
+
 (*
 References:
 - Nicolas Magaud, Julien Narboux, Pascal Schreck, "A Case Study in Formalizing Projective Geometry
