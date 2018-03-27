@@ -20,17 +20,17 @@ rk {A, B, P} = 3 \<and> rk {A, C, P} = 3 \<and> rk {B, C, P} = 3 \<and>
 rk {A, A'} = 2 \<and> rk {B, B'} = 2 \<and> rk {C, C'} = 2"
 
 lemma coplanar_ABCA'B'C'P :
-  assumes "desargues_config_2D A B C A' B' C' P \<alpha> \<beta> \<gamma>"
+  assumes "rk {A, A'} = 2" and "rk {A, B, C, A', B', C'} = 3" and "rk {A, A', P} = 2"
   shows "rk {A, B, C, A', B', C', P} = 3"
 proof-
   have "rk {A, B, C, A', B', C', P} + rk {A, A'} \<le> rk {A, B, C, A', B', C'} + rk {A, A', P}"
     using matroid_ax_3_alt[of "{A, A'}" "{A, B, C, A', B', C'}" "{A, A', P}"]
     by (simp add: insert_commute)
   then have "rk {A, B, C, A', B', C', P} \<le> 3" 
-    using assms desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>]
+    using assms(1) assms(2) assms(3)
     by linarith
   then show "rk {A, B, C, A', B', C', P} = 3" 
-    using assms desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] matroid_ax_2
+    using assms(2) matroid_ax_2
     by (metis Un_insert_right Un_upper2 le_antisym sup_bot.right_neutral)
 qed
 
@@ -80,20 +80,10 @@ proof-
     by blast
 qed
 
-lemma desargues_config_2D_new_pt :
-  assumes "desargues_config_2D A B C A' B' C' P \<alpha> \<beta> \<gamma>"
-  shows "\<exists>Q. rk {A, B, C, A', B', C', P, Q} \<ge> 4"
-proof-
-  have "rk {A, B, C, A', B', C', P} = 3" 
-    using assms coplanar_ABCA'B'C'P by auto
-  thus "\<exists>Q. rk {A, B, C, A', B', C', P, Q} \<ge> 4" 
-    using rk_ext
-    by (smt Un_insert_right add.commute add_One_commute insert_commute one_plus_numeral order_refl semiring_norm(2) semiring_norm(8) sup_bot.right_neutral)
-qed
-
 lemma rk_A'B'PQ :
-  assumes "desargues_config_2D A B C A' B' C' P \<alpha> \<beta> \<gamma>" and "rk {A', P} = 2" and "rk {B', P} = 2"
-and "rk {A, B, C, A', B', C', P, Q} \<ge> 4"
+  assumes "rk {A, A'} = 2" and "rk {A, B, C, A', B', C'} = 3"and "rk {A, A', P} = 2" and 
+"rk {A, B, P} = 3" and "rk {B, B', P} = 2" and "rk {A', P} = 2" and "rk {B', P} = 2" and 
+"rk {A, B, C, A', B', C', P, Q} \<ge> 4"
   shows "rk {A', B', P, Q} = 4"
 proof-
   have "card {A', B', P, Q} \<le> 4"
@@ -106,10 +96,155 @@ proof-
   then have "rk {A', B', P, Q} \<ge> rk {A, B, C, A', B', C', P, Q} + rk {A', B', P} - rk {A, B, C, A', B', C', P}"
     using le_diff_conv by blast
   then have f2:"rk {A', B', P, Q} \<ge> 4" 
-    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] assms(2) assms(3) assms(4) non_colinear_A'B'P coplanar_ABCA'B'C'P
+    using assms non_colinear_A'B'P coplanar_ABCA'B'C'P
     by (smt diff_add_inverse2 le_trans)
   from f1 and f2 show "rk {A', B', P, Q} = 4"
     by (simp add: f1 eq_iff)
+qed
+
+lemma rk_A'B'PR :
+  assumes "rk {P, Q, R} = 2" and "rk {P, R} = 2" and "rk {A', B', P, Q} = 4"
+shows "rk {A', B', P, R} = 4"
+proof-
+  have "card {A', B', P, R} \<le> 4"
+    by (smt Suc_numeral assms(2) card_empty card_insert_disjoint dual_order.trans finite.emptyI finite_insert insert_absorb linear nat_add_left_cancel_le numeral_2_eq_2 numeral_3_eq_3 numeral_Bit0 numeral_code(3) numeral_le_one_iff rk_singleton rk_triple_le semiring_norm(2) semiring_norm(69) semiring_norm(8))
+  then have f1:"rk {A', B', P, R} \<le> 4" 
+    using dual_order.trans matroid_ax_1b by auto
+  have f2:"rk {A', B', P, Q, R} + rk {P, R} \<le> rk {A', B', P, R} + rk {P, Q, R}" 
+    using matroid_ax_3_alt[of "{P, R}" "{A', B', P, R}" "{P, Q, R}"]
+    by (simp add: insert_commute)
+  have f3:"rk {A', B', P, Q, R} \<ge> 4" using matroid_ax_2 assms(3)
+    by (metis insert_mono subset_insertI)
+  from f2 and f3 have f4:"rk {A', B', P, R} \<ge> 4" 
+    using assms(1) assms(2) by linarith
+  thus "rk {A', B', P, R} = 4" using f1 f4
+    by (simp add: f1 le_antisym)
+qed
+
+lemma rk_ABA' :
+  assumes "rk {A, B, P} = 3" and "rk {A, A'} = 2" and "rk {A, A', P} = 2"
+  shows "rk {A, B, A'} = 3"
+proof-
+  have "rk {A, B, A', P} + rk {A, A'} \<le> rk {A, B, A'} + rk {A, A', P}" 
+    using matroid_ax_3_alt[of "{A, A'}" "{A, B, A'}" "{A, A', P}"]
+    by (simp add: insert_commute)
+  then have "rk {A, B, A'} \<ge> 3" using assms(1) assms(2) assms(3) matroid_ax_2
+    by (smt eq_iff insert_absorb2 insert_commute non_colinear_A'B'P rk_couple)
+  thus "rk {A, B, A'} = 3"
+    by (simp add: le_antisym rk_triple_le)
+qed
+
+lemma rk_Aa :
+  assumes "rk {A, B, P} = 3" and "rk {A, A'} = 2" and "rk {A, A', P} = 2" and "rk {Q, A', a} = 2" 
+and "rk {A, B, C, A', B', C', P, Q} \<ge> 4" and "rk {A, B, C, A', B', C'} \<le> 3"
+  shows "rk {A, a} = 2"
+proof-
+  have "rk {Q, A', A, a} + rk {a} \<le> rk {Q, A', a} + rk {A, a}" 
+    using matroid_ax_3_alt[of "{a}" "{Q, A', a}" "{A, a}"]
+    by (simp add: insert_commute)
+  then have "rk {Q, A', A, a} \<le> rk {Q, A', a} + rk {A, a} - rk {a}"
+    using add_le_imp_le_diff by blast
+  then have "rk {Q, A', A, a} \<le> 2" if "rk {A, a} = 1"
+    using assms(4)
+    by (simp add: rk_singleton that)
+  then have "rk {Q, A', A} \<le> 2" if "rk {A, a} = 1" 
+    using matroid_ax_2
+    by (metis One_nat_def assms(4) le_numeral_extra(4) nat_add_left_cancel_le numeral_2_eq_2 numeral_3_eq_3 one_add_one rk_couple rk_triple_le that)
+  then have "rk {Q, A', A} = 2" if "rk {A, a} = 1" 
+    using assms(2) matroid_ax_2
+    by (metis assms(4) numeral_eq_one_iff rk_couple semiring_norm(85) that) 
+  then have "rk {A, A', P, Q} = 2" if "rk {A, a} = 1" 
+    using assms(3) matroid_ax_3_alt'[of "{A, A'}" "P" "Q"]
+    by (simp add: assms(2) insert_commute that)
+  then have f1:"rk {A, A', B, P, Q} \<le> 3" if "rk {A, a} = 1"
+    by (metis One_nat_def Un_insert_right add.right_neutral add_Suc_right insert_commute matroid_ax_2_alt numeral_2_eq_2 numeral_3_eq_3 sup_bot.right_neutral that)
+  have "rk {A, B, C, A', B', C', P, Q} + rk {A, B, A'} \<le> rk {A, A', B, P, Q} + rk {A, B, C, A', B', C'}"
+    using matroid_ax_3_alt[of "{A, B, A'}" "{A, A', B, P, Q}" "{A, B, C, A', B', C'}"]
+    by (simp add: insert_commute)
+  then have "rk {A, B, C, A', B', C', P, Q} \<le> rk {A, A', B, P, Q} + rk {A, B, C, A', B', C'} - rk {A, B, A'}"
+    by linarith
+  then have "rk {A, B, C, A', B', C', P, Q} \<le> 3" if "rk {A, a} = 1"
+    using assms(1) assms(2) assms(3) assms(6) f1 rk_ABA'
+    by (smt \<open>rk {A, B, C, A', B', C', P, Q} + rk {A, B, A'} \<le> rk {A, A', B, P, Q} + rk {A, B, C, A', B', C'}\<close> add_diff_cancel_right' add_leD2 le_less_trans not_le ordered_cancel_comm_monoid_diff_class.add_diff_inverse ordered_cancel_comm_monoid_diff_class.le_add_diff that)
+  then have "\<not> (rk {A, a} = 1)" 
+    using assms(5) by linarith
+  thus "rk {A, a} = 2"
+    using rk_couple rk_singleton_bis by blast
+qed
+
+lemma rk_ABPRa :
+  assumes "rk {A, B, P} = 3" and "rk {A, B, C, A', B', C', P} = 3" and "rk {P, Q, R} = 2" 
+and "rk {P, R} = 2" and "rk {A', B', P, Q} = 4"
+  shows "rk {A, B, P, R, a} \<ge> 4"
+proof-
+  have "rk {A', B', P, R, a, A, B} \<ge> rk {A', B', P, R}" 
+    using matroid_ax_2 by auto
+  then have f1:"rk {A', B', P, R, a, A, B} \<ge> 4" 
+    using rk_A'B'PR assms(3) assms(4) assms(5) by auto
+  have f2:"rk {A', B', A, B, P} \<le> 3" 
+    using matroid_ax_2 assms(2)
+    by (smt insertI1 insert_subset subset_insertI)
+  have "rk {A', B', P, R, a, A, B} + rk {A, B, P} \<le> rk {A, B, P, R, a} + rk {A', B', A, B, P}"
+    using matroid_ax_3_alt[of "{A, B, P}" "{A, B, P, R, a}" "{A', B', A, B, P}"]
+    by (simp add: insert_commute)
+  then have "rk {A, B, P, R, a} \<ge> rk {A', B', P, R, a, A, B} + rk {A, B, P} - rk {A', B', A, B, P}"
+    by linarith
+  thus "rk {A, B, P, R, a} \<ge> 4" 
+    using f1 assms(1) f2
+    by linarith
+qed
+
+lemma rk_ABPa :
+  assumes "rk {A, B, P} = 3" and "rk {A, A'} = 2" and "rk {A, A', P} = 2" and "rk {Q, A', a} = 2"
+and "rk {A, B, C, A', B', C', P, Q} \<ge> 4" and "rk {A, B, C, A', B', C', P} = 3" and "rk {P, Q, R} = 2"
+and "rk {P, R} = 2" and "rk {A', B', P, Q} = 4" and "rk {R, A, a} = 2"
+  shows "rk {A, B, P, a} \<ge> 4"
+proof-
+  have "rk {A, B, C, A', B', C'} \<le> 3" 
+    using matroid_ax_2 assms(6)
+    by (smt insert_iff subsetI)
+  then have f1:"rk {A, a} = 2" 
+    using assms(1) assms(2) assms(3) assms(4) assms(5) rk_Aa by blast
+  have f2:"rk {A, B, P, R, a} \<ge> 4" 
+    using assms(1) assms(6) assms(7) assms(8) assms(9) rk_ABPRa by blast
+  have "rk {A, B, P, R, a} + rk {A, a} \<le> rk {A, B, P, a} + rk {R, A, a}"
+    using matroid_ax_3_alt[of "{A, a}" "{A, B, P, a}" "{R, A, a}"]
+    by (simp add: insert_commute)
+  thus "rk {A, B, P, a} \<ge> 4" using f1 f2 assms(10) 
+    by (smt add_le_imp_le_diff diff_add_inverse2 order_trans)
+qed
+
+lemma rk_AA'C :
+  assumes "rk {A, C, P} = 3" and "rk {A, A'} = 2" and "rk {A, A', P} = 2"
+  shows "rk {A, A', C} \<ge> 3"
+proof-
+  have f1:"rk {A, C, A', P} \<ge> 3" 
+    using assms(1) matroid_ax_2
+    by (metis insert_commute subset_insertI)
+  have "rk {A, C, A', P} + rk {A, A'} \<le> rk {A, A', C} + rk {A, A', P}" 
+    using matroid_ax_3_alt[of "{A, A'}" "{A, A', C}" "{A, A', P}"]
+    by (simp add: insert_commute)
+  thus "rk {A, A', C} \<ge> 3" 
+    using f1 assms(2) assms(3) by linarith
+qed
+
+lemma rk_AA'Ca :
+  assumes "rk {A, A', C} \<ge> 3" and "rk {A, B, P, a} \<ge> 4" and "rk {A, B, C, A', B', C', P} = 3"
+  shows "rk {A, A', C, a} \<ge> 4"
+proof-
+  have f1:"rk {A, A', C, a, B, P} \<ge> 4" 
+    using assms(2) matroid_ax_2
+    by (smt dual_order.trans insert_commute insert_mono insert_subset subset_insertI)
+  have f2:"rk {A, B, C, P, A'} \<le> 3" 
+    using assms(3) matroid_ax_2
+    by (smt empty_subsetI insert_commute insert_mono semiring_norm(3))
+  have "rk {A, A', C, a, B, P} + rk {A, A', C} \<le> rk {A, A', C, a} + rk {A, B, C, P, A'}"
+    using matroid_ax_3_alt[of "{A, A', C}" "{A, A', C, a}" "{A, B, C, P, A'}"]
+    by (simp add: insert_commute)
+  then have "rk {A, A', C, a} \<ge> rk {A, A', C, a, B, P} + rk {A, A', C} - rk {A, B, C, P, A'}"
+    using le_diff_conv by blast
+  thus "rk {A, A', C, a} \<ge> 4" using f1 assms(1) f2
+    by linarith
 qed
 
 theorem desargues_2D :
