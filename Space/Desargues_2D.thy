@@ -64,7 +64,7 @@ proof-
     using f1 by auto
 qed
 
-lemma desargues_config_2D_non_colinear :
+lemma desargues_config_2D_non_collinear_P :
   assumes "desargues_config_2D A B C A' B' C' P \<alpha> \<beta> \<gamma>" and "rk {A', P} = 2" and "rk {B', P} = 2" 
 and "rk {C', P} = 2"
   shows "rk {A', B', P} = 3" and "rk {A', C', P} = 3" and "rk {B', C', P} = 3"
@@ -81,7 +81,7 @@ proof-
 qed
 
 lemma rk_A'B'PQ :
-  assumes "rk {A, A'} = 2" and "rk {A, B, C, A', B', C'} = 3"and "rk {A, A', P} = 2" and 
+  assumes "rk {A, A'} = 2" and "rk {A, B, C, A', B', C'} = 3" and "rk {A, A', P} = 2" and 
 "rk {A, B, P} = 3" and "rk {B, B', P} = 2" and "rk {A', P} = 2" and "rk {B', P} = 2" and 
 "rk {A, B, C, A', B', C', P, Q} \<ge> 4"
   shows "rk {A', B', P, Q} = 4"
@@ -100,6 +100,22 @@ proof-
     by (smt diff_add_inverse2 le_trans)
   from f1 and f2 show "rk {A', B', P, Q} = 4"
     by (simp add: f1 eq_iff)
+qed
+
+lemma desargues_config_2D_rkA'B'PQ_rkA'C'PQ_rkB'C'PQ :
+  assumes "desargues_config_2D A B C A' B' C' P \<alpha> \<beta> \<gamma>" and "rk {A', P} = 2" and "rk {B', P} = 2"
+and "rk {C', P} = 2" and "rk {A, B, C, A', B', C', P, Q} \<ge> 4"
+  shows "rk {A', B', P, Q} = 4" and "rk {A', C', P, Q} = 4" and "rk {B', C', P, Q} = 4"
+proof-
+  show "rk {A', B', P, Q} = 4" 
+    using rk_A'B'PQ[of "A" "A'" "B" "C" "B'" "C'" "P" "Q"] assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] 
+assms(2) assms(3) assms(5) by blast
+  show "rk {A', C', P, Q} = 4"
+    using rk_A'B'PQ[of "A" "A'" "C" "B" "C'" "B'" "P" "Q"] assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] assms(2) assms(4) assms(5)
+    by (metis insert_commute)
+  show "rk {B', C', P, Q} = 4"
+    using rk_A'B'PQ[of "B" "B'" "C" "A" "C'" "A'" "P" "Q"] assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] assms(3) assms(4) assms(5)
+    by (metis insert_commute)
 qed
 
 lemma rk_A'B'PR :
@@ -121,6 +137,16 @@ proof-
     by (simp add: f1 le_antisym)
 qed
 
+lemma rk_A'C'PR :
+  assumes "rk {P, Q, R} = 2" and "rk {P, R} = 2" and "rk {A', C', P, Q} = 4"
+  shows "rk {A', C', P, R} = 4"
+  using assms(1) assms(2) assms(3) rk_A'B'PR by blast
+
+lemma rk_B'C'PR :
+  assumes "rk {P, Q, R} = 2" and "rk {P, R} = 2" and "rk {B', C', P, Q} = 4"
+  shows "rk {B', C', P, R} = 4"
+  using assms(1) assms(2) assms(3) rk_A'C'PR by blast
+
 lemma rk_ABA' :
   assumes "rk {A, B, P} = 3" and "rk {A, A'} = 2" and "rk {A, A', P} = 2"
   shows "rk {A, B, A'} = 3"
@@ -132,6 +158,20 @@ proof-
     by (smt eq_iff insert_absorb2 insert_commute non_colinear_A'B'P rk_couple)
   thus "rk {A, B, A'} = 3"
     by (simp add: le_antisym rk_triple_le)
+qed
+
+lemma desargues_config_2D_non_collinear :
+  assumes "desargues_config_2D A B C A' B' C' P \<alpha> \<beta> \<gamma>"
+  shows "rk {A, B, A'} = 3" and "rk {A, B, B'} = 3" and "rk {A, C, C'} = 3"
+proof-
+  show "rk {A, B, A'} = 3" 
+    using assms desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] rk_ABA' by auto
+  show "rk {A, B, B'} = 3" 
+    using assms desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] rk_ABA'
+    by (smt insert_commute)
+  show "rk {A, C, C'} = 3" 
+    using assms desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] rk_ABA'
+    by (smt insert_commute)
 qed
 
 lemma rk_Aa :
@@ -170,6 +210,22 @@ proof-
     using assms(5) by linarith
   thus "rk {A, a} = 2"
     using rk_couple rk_singleton_bis by blast
+qed
+
+lemma desargues_config_2D_rkAa_rkBb_rkCc :
+  assumes "desargues_config_2D A B C A' B' C' P \<alpha> \<beta> \<gamma>" and "rk {A, B, C, A', B', C', P, Q} \<ge> 4"
+and "rk {Q, A', a} = 2" and "rk {Q, B', b} = 2" and "rk {Q, C', c} = 2"
+  shows "rk {A, a} = 2" and "rk {B, b} = 2" and "rk {C, c} = 2"
+proof-
+  show "rk {A, a} = 2" 
+    using rk_Aa assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] assms(2) assms(3)
+    by (metis rk_triple_le)
+  show "rk {B, b} = 2" 
+    using rk_Aa assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] assms(2) assms(4)
+    by (smt insert_commute rk_triple_le)
+  show "rk {C, c} = 2"
+    using rk_Aa[of "C" "A" "P" "C'" "Q" "c" "B" "B'" "A'"] assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] assms(2) assms(5)
+    by (metis insert_commute rk_triple_le)
 qed
 
 lemma rk_ABPRa :
@@ -213,6 +269,30 @@ proof-
   thus "rk {A, B, P, a} \<ge> 4" using f1 f2 assms(10) 
     by (smt add_le_imp_le_diff diff_add_inverse2 order_trans)
 qed
+
+lemma desargues_config_2D_rkABPa_rkABPb_rkABPc :
+  assumes "desargues_config_2D A B C A' B' C' P \<alpha> \<beta> \<gamma>" and "rk {A, B, C, A', B', C', P, Q} \<ge> 4" 
+and "rk {P, Q, R} = 2" and "rk {P, R} = 2" and "rk {A', P} = 2" and "rk {B', P} = 2" and "rk {C', P} = 2" 
+"rk {Q, A', a} = 2" and "rk {R, A, a} = 2" and "rk {Q, B', b} = 2" and "rk {R, B, b} = 2" and 
+"rk {Q, C', c} = 2" and "rk {R, C, c} = 2"
+  shows "rk {A, B, P, a} \<ge> 4" and "rk {A, B, P, b} \<ge> 4" and "rk {A, B, P, c} \<ge> 4"
+proof-
+  have f1:"rk {A, B, C, A', B', C', P} = 3" 
+    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] coplanar_ABCA'B'C'P by auto
+  have f2:"rk {A', B', P, Q} = 4" 
+    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] assms(2) assms(5) assms(6) rk_A'B'PQ[of "A" "A'" "B" "C" "B'" "C'" "P" "Q"] by auto
+  show "rk {A, B, P, a} \<ge> 4" 
+    using f1 f2 assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] assms(8) assms(2) assms(3) assms(4) assms(9) rk_ABPa by auto
+  show "rk {A, B, P, b} \<ge> 4" 
+    using f1 f2 assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] assms(10) assms(2) assms(3) 
+assms(4) assms(11) rk_ABPa[of "B" "A" "P" "B'" "Q" "b" "C" "A'" "C'" "R"]
+    by (metis insert_commute)
+  have f3:"rk {B', C', P, Q} = 4" 
+    using desargues_config_2D_rkA'B'PQ_rkA'C'PQ_rkB'C'PQ assms(1) assms(2) assms(5) assms(6) assms(7) by auto
+  show "rk {A, B, P, c} \<ge> 4" using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] rk_ABPa
+
+
+
 
 lemma rk_AA'C :
   assumes "rk {A, C, P} = 3" and "rk {A, A'} = 2" and "rk {A, A', P} = 2"
