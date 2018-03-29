@@ -154,6 +154,16 @@ qed
 lemma rk_triple_le : "rk {A, B, C} \<le> 3"
   by (metis Suc_numeral Un_commute insert_absorb2 insert_is_Un linear matroid_ax_2_alt numeral_2_eq_2 numeral_3_eq_3 numeral_le_one_iff numeral_plus_one rk_couple rk_singleton semiring_norm(70))
 
+lemma rk_couple_to_singleton :
+  assumes "rk {A, B} = 1"
+  shows "A = B"
+proof-
+  have "rk {A, B} = 2" if "A \<noteq> B"
+    using rk_couple by (simp add: that)
+  thus "A = B" 
+    using assms by auto
+qed
+
 (*
 References:
 - Nicolas Magaud, Julien Narboux, Pascal Schreck, "A Case Study in Formalizing Projective Geometry
