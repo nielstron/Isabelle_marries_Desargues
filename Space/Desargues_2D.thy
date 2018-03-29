@@ -352,6 +352,42 @@ proof-
     by linarith
 qed
 
+lemma rk_Ra :
+  assumes "rk {Q, A', a} = 2" and "rk {P, Q, R} = 2" and "rk {R, Q} = 2" and "rk {A, A', P} = 2"
+and "rk {A', P} = 2" and "rk {A, B, C, A', B', C', P} = 3" and "rk {A, B, A'} = 3" and 
+"rk {A, B, C, A', B', C', P, Q} \<ge> 4"
+  shows "rk {R, a} = 2"
+proof-
+  have "R = a" if "rk {R, a} = 1" 
+    using rk_couple_to_singleton by (simp add: that)
+  then have "rk {R, Q, A'} = 2" if "rk {R, a} = 1"
+    using assms(1) by (simp add: insert_commute that)
+  then have f1:"rk {P, Q, R, A'} = 2" if "rk {R, a} = 1"
+    using assms(2) assms(3) matroid_ax_3_alt'
+    by (metis Un_empty_right Un_insert_right insert_commute that)
+  have "rk {P, Q, R, A', A} + rk {A', P} \<le> rk {A, A', P} + rk {P, Q, R, A'}"
+    using matroid_ax_3_alt[of "{A', P}" "{A, A', P}" "{P, Q, R, A'}"]
+    by (simp add: insert_commute)
+  then have "rk {P, Q, R, A', A} = 2" if "rk {R, a} = 1"
+    using assms(4) f1 assms(5)
+    by (metis Un_insert_right add_le_cancel_right insert_is_Un le_antisym matroid_ax_2 subset_insertI that)
+  then have f2:"rk {P, Q, R, A', A, B} \<le> 3" if "rk {R, a} = 1" 
+    using matroid_ax_2_alt[of "{P, Q, R, A', A}" "B"]
+    by (simp add: insert_commute that)
+  have f3:"rk {A, B, A', P} \<ge> 3" 
+    using assms(7) matroid_ax_2
+    by (metis insert_commute subset_insertI)
+  have "rk {P, Q, R, A', A, B, C, B', C'} + rk {A, B, A', P} \<le> rk {P, Q, R, A', A, B} + rk {A, B, C, A', B', C', P}"
+    using matroid_ax_3_alt[of "{A, B, A', P}" "{P, Q, R, A', A, B}" "{A, B, C, A', B', C', P}"]
+    by (simp add: insert_commute)
+  then have f4:"rk {P, Q, R, A', A, B, C, B', C'} \<le> 3" if "rk {R, a} = 1"
+    using f2 f3 assms(6) that by linarith
+  have f5:"rk {P, Q, R, A', A, B, C, B', C'} \<ge> rk {A, B, C, A', B', C', P, Q}" 
+    using matroid_ax_2 by auto
+  thus "rk {R, a} = 2" using f4 f5 assms(8)
+    by (smt Suc_1 Suc_le_eq add_Suc add_Suc_right nat_1_add_1 not_le numeral_2_eq_2 numeral_3_eq_3 numeral_Bit0 order.trans rk_couple rk_singleton_bis)
+qed
+
 theorem desargues_2D :
   assumes "desargues_config_2D A B C A' B' C' P \<alpha> \<beta> \<gamma>"
   shows "rk {\<alpha>, \<beta>, \<gamma>} \<le> 2"
