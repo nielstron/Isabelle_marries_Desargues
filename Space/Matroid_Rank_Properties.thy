@@ -164,6 +164,23 @@ proof-
     using assms by auto
 qed
 
+lemma rk_triple_to_rk_couple :
+  assumes "rk {A, B, C} = 3"
+  shows "rk {A, B} = 2"
+proof-
+  have "rk {A, B} \<le> 2" 
+    using matroid_ax_1b
+    by (metis one_le_numeral rk_ax_couple rk_couple rk_singleton_bis)
+  have "rk {A, B, C} \<le> 2" if "rk {A, B} = 1"
+    using matroid_ax_2_alt[of "{A, B}" C]
+    by (simp add: insert_commute that)
+  then have "rk {A, B} \<ge> 2"
+    using assms rk_ax_couple rk_singleton_bis 
+    by force
+  thus "rk {A, B} = 2"
+    by (simp add: \<open>rk {A, B} \<le> 2\<close> le_antisym)
+qed
+
 (*
 References:
 - Nicolas Magaud, Julien Narboux, Pascal Schreck, "A Case Study in Formalizing Projective Geometry
