@@ -671,6 +671,256 @@ desargues_config_2D_def[of B A C B' A' C' P \<beta> \<alpha> \<gamma>]
     by (metis assms(10) assms(11) assms(12) assms(13) assms(14) assms(2) assms(3) assms(4) assms(5) assms(6) assms(7) assms(8) assms(9) insert_commute)
 qed
 
+lemma rk_abc\<alpha>\<beta>\<gamma> :
+  assumes "desargues_config_2D A B C A' B' C' P \<alpha> \<beta> \<gamma>" and "rk {A, B, C, A', B', C', P, Q} \<ge> 4"
+and "rk {Q, A', a} = 2" and "rk {Q, B', b} = 2" and "rk {Q, C', c} = 2" and "rk {P, Q, R} = 2" and 
+"rk {P, R} = 2" and "rk {Q, R} = 2" and "rk {R, A, a} = 2" and "rk {R, B, b} = 2" and "rk {R, C, c} = 2" 
+and "rk {A', P} = 2" and "rk {B', P} = 2" and "rk {C', P} = 2"
+  shows "rk {a, b, c, \<alpha>, \<beta>, \<gamma>} = 3"
+proof-
+  have f1:"rk {a, b, \<gamma>} = 2" 
+    using rk_ab\<gamma>[of A B C A' B' C' P \<alpha> \<beta> \<gamma> Q a b c R] assms 
+    by auto
+  have f2:"rk {a, c, \<beta>} = 2"
+    using rk_ac\<beta>[of A B C A' B' C' P \<alpha> \<beta> \<gamma> Q a b c R] assms 
+    by auto
+  have f3:"rk {b, c, \<alpha>} = 2"
+    using rk_bc\<alpha>[of A B C A' B' C' P \<alpha> \<beta> \<gamma> Q a b c R] assms
+    by auto
+  have "rk {a, b, c, \<beta>, \<gamma>} + rk {a} \<le> rk {a, b, \<gamma>} + rk {a, c, \<beta>}"
+    using matroid_ax_3_alt[of "{a}" "{a, b, \<gamma>}" "{a, c, \<beta>}"]
+    by (simp add: insert_commute)
+  then have "rk {a, b, c, \<beta>, \<gamma>} \<le> 3" 
+    using f1 f2
+    by (metis Suc_1 Suc_eq_plus1 Suc_le_mono add_Suc_right numeral_3_eq_3 numeral_nat(1) numerals(1) rk_singleton)
+  then have f4:"rk {a, b, c, \<beta>, \<gamma>} = 3"
+    using matroid_ax_2 rk_abc[of A B C A' B' C' P \<alpha> \<beta> \<gamma> Q a b c R]
+   by (metis Un_upper2 assms(1) assms(10) assms(11) assms(12) assms(13) assms(14) assms(2) assms(3) assms(4) assms(5) assms(6) assms(7) assms(8) assms(9) insert_mono le_antisym sup_bot.comm_neutral)
+  have "rk {a, b, c} = 3"
+    using rk_abc[of A B C A' B' C' P \<alpha> \<beta> \<gamma> Q a b c R] assms(1) assms(10) assms(11) assms(12) assms(13) assms(14) assms(2) assms(3) assms(4) assms(5) assms(6) assms(7) assms(8) assms(9) 
+    by blast
+  then have f5:"rk {b, c} = 2"
+    using rk_triple_to_rk_couple rk_couple by force
+  have "rk {a, b, c, \<alpha>, \<beta>, \<gamma>} + rk {b, c} \<le> rk {a, b, c, \<beta>, \<gamma>} + rk {b, c, \<alpha>}"
+    using matroid_ax_3_alt[of "{b, c}" "{a, b, c, \<beta>, \<gamma>}" "{b, c, \<alpha>}"]
+    by (simp add: insert_commute)
+  then have "rk {a, b, c, \<alpha>, \<beta>, \<gamma>} \<le> 3"
+    using f3 f4 f5
+    by linarith
+  thus "rk {a, b, c, \<alpha>, \<beta>, \<gamma>} = 3"
+    using matroid_ax_2
+    by (metis \<open>rk {a, b, c} = 3\<close> empty_subsetI insert_mono le_antisym)
+qed
+
+lemma rk_ABC\<alpha>\<beta>\<gamma> :
+  assumes "desargues_config_2D A B C A' B' C' P \<alpha> \<beta> \<gamma>" and "rk {A, B, C, A', B', C', P, Q} \<ge> 4"
+and "rk {Q, A', a} = 2" and "rk {Q, B', b} = 2" and "rk {Q, C', c} = 2" and "rk {P, Q, R} = 2" and 
+"rk {P, R} = 2" and "rk {Q, R} = 2" and "rk {R, A, a} = 2" and "rk {R, B, b} = 2" and "rk {R, C, c} = 2" 
+and "rk {A', P} = 2" and "rk {B', P} = 2" and "rk {C', P} = 2"
+  shows "rk {A, B, C, \<alpha>, \<beta>, \<gamma>} = 3"
+proof-
+have f1:"rk {A, B, \<gamma>} = 2" 
+    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] 
+    by auto
+  have f2:"rk {A, C, \<beta>} = 2"
+    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] 
+    by auto
+  have f3:"rk {B, C, \<alpha>} = 2"
+    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] 
+    by auto
+  have "rk {A, B, C, \<beta>, \<gamma>} + rk {A} \<le> rk {A, B, \<gamma>} + rk {A, C, \<beta>}"
+    using matroid_ax_3_alt[of "{A}" "{A, B, \<gamma>}" "{A, C, \<beta>}"]
+    by (simp add: insert_commute)
+  then have "rk {A, B, C, \<beta>, \<gamma>} \<le> 3" 
+    using f1 f2
+    by (metis Suc_1 Suc_eq_plus1 Suc_le_mono add_Suc_right numeral_3_eq_3 numeral_nat(1) numerals(1) rk_singleton)
+  have "rk {A, B, C} = 3" 
+    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>]
+    by auto
+  then have f4:"rk {A, B, C, \<beta>, \<gamma>} = 3"
+    using matroid_ax_2
+    by (metis \<open>rk {A, B, C, \<beta>, \<gamma>} \<le> 3\<close> empty_subsetI insert_mono le_antisym)
+  have f5:"rk {B, C} = 2"
+    using \<open>rk {A, B, C} = 3\<close> rk_couple rk_triple_to_rk_couple by force
+  have "rk {A, B, C, \<alpha>, \<beta>, \<gamma>} + rk {B, C} \<le> rk {A, B, C, \<beta>, \<gamma>} + rk {B, C, \<alpha>}"
+    using matroid_ax_3_alt[of "{B, C}" "{A, B, C, \<beta>, \<gamma>}" "{B, C, \<alpha>}"]
+    by (simp add: insert_commute)
+  then have "rk {A, B, C, \<alpha>, \<beta>, \<gamma>} \<le> 3"
+    using f3 f4 f5
+    by linarith
+  thus "rk {A, B, C, \<alpha>, \<beta>, \<gamma>} = 3"
+    using matroid_ax_2
+    by (metis \<open>rk {A, B, C} = 3\<close> empty_subsetI insert_mono le_antisym)
+qed
+
+lemma rk_\<alpha>\<beta>\<gamma> :
+  assumes "desargues_config_2D A B C A' B' C' P \<alpha> \<beta> \<gamma>" and "rk {A, B, C, A', B', C', P, Q} \<ge> 4"
+and "rk {Q, A', a} = 2" and "rk {Q, B', b} = 2" and "rk {Q, C', c} = 2" and "rk {P, Q, R} = 2" and 
+"rk {P, R} = 2" and "rk {Q, R} = 2" and "rk {R, A, a} = 2" and "rk {R, B, b} = 2" and "rk {R, C, c} = 2" 
+and "rk {A', P} = 2" and "rk {B', P} = 2" and "rk {C', P} = 2"
+  shows "rk {\<alpha>, \<beta>, \<gamma>} \<le> 2"
+proof-
+  have "rk {A, B, C, a, b, c} \<ge> 4"
+    using desargues_config_2D_rkABCabc[of A B C A' B' C' P \<alpha> \<beta> \<gamma> Q a R b c] assms 
+    by auto
+  have "{A, B, C, a, b, c} \<subseteq> {A, B, C, a, b, c, \<alpha>, \<beta>, \<gamma>}" 
+    by auto
+  then have f1:"rk {A, B, C, a, b, c, \<alpha>, \<beta>, \<gamma>} \<ge> 4"
+    using matroid_ax_2
+    by (meson \<open>4 \<le> rk {A, B, C, a, b, c}\<close> dual_order.trans)
+  have "rk {A, B, C, a, b, c, \<alpha>, \<beta>, \<gamma>} + rk {\<alpha>, \<beta>, \<gamma>} \<le> rk {A, B, C, \<alpha>, \<beta>, \<gamma>} + rk {a, b, c, \<alpha>, \<beta>, \<gamma>}"
+    using matroid_ax_3_alt[of "{\<alpha>, \<beta>, \<gamma>}" "{A, B, C, \<alpha>, \<beta>, \<gamma>}" "{a, b, c, \<alpha>, \<beta>, \<gamma>}"]
+    by (simp add: insert_commute)
+  thus "rk {\<alpha>, \<beta>, \<gamma>} \<le> 2"
+    using f1 rk_ABC\<alpha>\<beta>\<gamma>[of A B C A' B' C' P \<alpha> \<beta> \<gamma> Q a b c R] rk_abc\<alpha>\<beta>\<gamma>[of A B C A' B' C' P \<alpha> \<beta> \<gamma> Q a b c R]
+    by (smt One_nat_def Suc_1 Suc_le_eq add_Suc_right add_le_imp_le_diff assms(1) assms(10) assms(11) assms(12) assms(13) assms(14) assms(2) assms(3) assms(4) assms(5) assms(6) assms(7) assms(8) assms(9) diff_add_inverse2 le_antisym nat_1_add_1 not_less numeral_3_eq_3 one_plus_numeral rk_triple_le semiring_norm(2) semiring_norm(4))
+qed
+
+lemma rk_\<alpha>\<beta>\<gamma>_special_case_1 :
+  assumes "desargues_config_2D A B C A' B' C' P \<alpha> \<beta> \<gamma>" and "rk {A', P} = 1"
+  shows "rk {\<alpha>, \<beta>, \<gamma>} \<le> 2"
+proof-
+  have "A' = P" sledgehammer
+    by (simp add: assms(2) rk_couple_to_singleton)
+  then have "rk {A', C', C, \<beta>} + rk {C', A'} \<le> rk {C, C', P} + rk {A', C', \<beta>}"
+    using matroid_ax_3_alt[of "{C', A'}" "{C, C', P}" "{A', C', \<beta>}"]
+    by (simp add: insert_commute)
+  then have "rk {A', C', C, \<beta>} \<le> rk {A', C', \<beta>}"
+    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>]
+    by (metis (full_types) add_le_cancel_right insert_commute rk_triple_to_rk_couple)
+  then have f5:"rk {A', C', C, \<beta>} = 2"
+    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>]
+    by (metis insert_commute le_antisym matroid_ax_2 subset_insertI)
+  have "rk {A, A', C, a, C', \<beta>} + rk {A, C, \<beta>} \<le> rk {A, A', C', C, \<beta>} + rk {a, A, C, \<beta>}"
+    using matroid_ax_3_alt[of "{A, C, \<beta>}" "{A, A', C', C, \<beta>}" "{a, A, C, \<beta>}"]
+    by (simp add: insert_commute)
+  then have f6:"rk {A, A', C', C, \<beta>} \<ge> 3"
+    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] rk_AA'Ca rk_acAC\<beta>
+    by (metis Un_insert_right Un_upper2 \<open>A' = P\<close> insert_commute matroid_ax_2 sup_bot.right_neutral)
+  have "rk {A, A', C', C, \<beta>} + rk {\<beta>, C} \<le> rk {A, C, \<beta>} + rk {A', C', C, \<beta>}"
+    using matroid_ax_3_alt[of "{\<beta>, C}" "{A, C, \<beta>}" "{A', C', C, \<beta>}"]
+    by (simp add: insert_commute)
+  then have "rk {\<beta>, C} \<le> 1" 
+    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] f5 f6
+    by linarith
+  then have "\<beta> = C"
+    using rk_couple 
+    by force
+  have "rk {A', B', B, \<gamma>} + rk {B', A'} \<le> rk {B, B', P} + rk {A', B', \<gamma>}"
+    using matroid_ax_3_alt[of "{B', A'}" "{B, B', P}" "{A', B', \<gamma>}"]
+    by (simp add: \<open>A' = P\<close> insert_commute)
+  then have "rk {A', B', B, \<gamma>} \<le> rk {A', B', \<gamma>}"
+    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>]
+    by (metis (full_types) add_le_cancel_right insert_commute rk_triple_to_rk_couple)
+  then have f7:"rk {A', B', B, \<gamma>} = 2"
+    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>]
+    by (metis insert_commute le_antisym matroid_ax_2 subset_insertI)
+  have "rk {A, A', B, a, B', \<gamma>} + rk {A, B, \<gamma>} \<le> rk {A, A', B', B, \<gamma>} + rk {a, A, B, \<gamma>}"
+    using matroid_ax_3_alt[of "{A, B, \<gamma>}" "{A, A', B', B, \<gamma>}" "{a, A, B, \<gamma>}"]
+    by (simp add: insert_commute)
+  then have f8:"rk {A, A', B', B, \<gamma>} \<ge> 3"
+    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] rk_AA'Ca rk_acAC\<beta>
+    by (metis Un_insert_right Un_upper2 \<open>A' = P\<close> insert_commute matroid_ax_2 sup_bot.right_neutral)
+  have "rk {A, A', B', B, \<gamma>} + rk {\<gamma>, B} \<le> rk {A, B, \<gamma>} + rk {A', B', B, \<gamma>}"
+    using matroid_ax_3_alt[of "{\<gamma>, B}" "{A, B, \<gamma>}" "{A', B', B, \<gamma>}"]
+    by (simp add: insert_commute)
+  then have "rk {\<gamma>, B} \<le> 1" 
+    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] f7 f8
+    by linarith
+  then have "\<gamma> = B"
+    using rk_couple 
+    by force
+  then have "rk {\<alpha>, \<beta>, \<gamma>} = rk {\<alpha>, C, B}"
+    using \<open>\<beta> = C \<close> by auto
+  thus "rk {\<alpha>, \<beta>, \<gamma>} \<le> 2" 
+    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>]
+    by (metis insert_commute order_refl)
+qed
+
+lemma rk_\<alpha>\<beta>\<gamma>_special_case_2 :
+  assumes "desargues_config_2D A B C A' B' C' P \<alpha> \<beta> \<gamma>" and "rk {B', P} = 1"
+  shows "rk {\<alpha>, \<beta>, \<gamma>} \<le> 2"
+proof-
+  have "desargues_config_2D B A C B' A' C' P \<beta> \<alpha> \<gamma>"
+    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] desargues_config_2D_def[of B A C B' A' C' P \<beta> \<alpha> \<gamma>]
+    by (metis insert_commute)
+  thus "rk {\<alpha>, \<beta>, \<gamma>} \<le> 2"
+    using rk_\<alpha>\<beta>\<gamma>_special_case_1[of B A C B' A' C' P \<beta> \<alpha> \<gamma>] assms(2)
+    by (simp add: insert_commute)
+qed
+
+lemma rk_\<alpha>\<beta>\<gamma>_special_case_3 :
+  assumes "desargues_config_2D A B C A' B' C' P \<alpha> \<beta> \<gamma>" and "rk {C', P} = 1"
+  shows "rk {\<alpha>, \<beta>, \<gamma>} \<le> 2"
+proof-
+  have "desargues_config_2D  C B A C' B' A' P \<gamma> \<beta> \<alpha>"
+    using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] desargues_config_2D_def[of C B A C' B' A' P \<gamma> \<beta> \<alpha>]
+    by (metis insert_commute)
+  thus "rk {\<alpha>, \<beta>, \<gamma>} \<le> 2"
+    using rk_\<alpha>\<beta>\<gamma>_special_case_1[of C B A C' B' A' P \<gamma> \<beta> \<alpha>] assms(2)
+    by (simp add: insert_commute)
+qed
+
 theorem desargues_2D :
   assumes "desargues_config_2D A B C A' B' C' P \<alpha> \<beta> \<gamma>"
   shows "rk {\<alpha>, \<beta>, \<gamma>} \<le> 2"
+proof-
+  have f1:"rk {A, B, C, A', B', C', P} = 3"
+    using assms desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>] coplanar_ABCA'B'C'P
+    by auto
+  obtain Q where "rk {A, B, C, A', B', C', P, Q} \<ge> 4"
+    using f1 rk_ext[of "{A, B, C, A', B', C', P}"]
+    by (metis Un_insert_left add.commute one_plus_numeral order_refl semiring_norm(2) semiring_norm(4) sup_bot.left_neutral)
+  obtain R where "rk {P, Q, R} = 2" and "rk {P, R} = 2" and "rk {Q, R} = 2"
+    using rk_ax_3_pts by auto
+  have "rk {Q, A', R, A, P} + rk {P} \<le> rk {P, Q, R} + rk {A, A', P}"
+    using matroid_ax_3_alt[of "{P}" "{P, Q, R}" "{A, A', P}"]
+    by (simp add: insert_commute)
+  then have "rk {Q, A', R, A, P} \<le> 3"
+    using rk_singleton assms desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>]
+    by (metis Suc_1 Suc_eq_plus1 Suc_le_mono \<open>rk {P, Q, R} = 2\<close> add_Suc_right eval_nat_numeral(3))
+  then have f2:"rk {Q, A', R, A} \<le> 3"
+    using matroid_ax_2
+    by (metis (no_types, hide_lams) dual_order.trans insert_commute subset_insertI)
+  obtain a where "rk {Q, A', a} = 2" and "rk {R, A, a} = 2"
+    using f2 rk_ax_pasch by blast
+  have "rk {Q, B', R, B, P} + rk {P} \<le> rk {P, Q, R} + rk {B, B', P}"
+    using matroid_ax_3_alt[of "{P}" "{P, Q, R}" "{B, B', P}"]
+    by (simp add: insert_commute)
+  then have "rk {Q, B', R, B, P} \<le> 3"
+    using rk_singleton assms desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>]
+    by (metis Suc_1 Suc_eq_plus1 Suc_le_mono \<open>rk {P, Q, R} = 2\<close> add_Suc_right eval_nat_numeral(3))
+  then have f3:"rk {Q, B', R, B} \<le> 3"
+    using matroid_ax_2
+    by (metis (no_types, hide_lams) dual_order.trans insert_commute subset_insertI)
+  obtain b where "rk {Q, B', b} = 2" and "rk {R, B, b} = 2"
+    using f3 rk_ax_pasch by blast
+  have "rk {Q, C', R, C, P} + rk {P} \<le> rk {P, Q, R} + rk {C, C', P}"
+    using matroid_ax_3_alt[of "{P}" "{P, Q, R}" "{C, C', P}"]
+    by (simp add: insert_commute)
+  then have "rk {Q, C', R, C, P} \<le> 3"
+    using rk_singleton assms desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>]
+    by (metis Suc_1 Suc_eq_plus1 Suc_le_mono \<open>rk {P, Q, R} = 2\<close> add_Suc_right eval_nat_numeral(3))
+  then have f4:"rk {Q, C', R, C} \<le> 3"
+    using matroid_ax_2
+    by (metis (no_types, hide_lams) dual_order.trans insert_commute subset_insertI)
+  obtain c where "rk {Q, C', c} = 2" and "rk {R, C, c} = 2"
+    using f4 rk_ax_pasch by blast
+  then have "rk {\<alpha>, \<beta>, \<gamma>} \<le> 2" if "rk {A', P} = 2" and "rk {B', P} = 2" and "rk {C', P} = 2"
+    using rk_\<alpha>\<beta>\<gamma>[of A B C A' B' C' P \<alpha> \<beta> \<gamma> Q a b c R] \<open>4 \<le> rk {A, B, C, A', B', C', P, Q}\<close> \<open>rk {P, Q, R} = 2\<close> \<open>rk {P, R} = 2\<close> \<open>rk {Q, A', a} = 2\<close> \<open>rk {Q, B', b} = 2\<close> \<open>rk {Q, R} = 2\<close> \<open>rk {R, A, a} = 2\<close> \<open>rk {R, B, b} = 2\<close> assms that(1) that(2) that(3) 
+    by blast
+  have "rk {\<alpha>, \<beta>, \<gamma>} \<le> 2" if "rk {A', P} = 1"
+    using rk_\<alpha>\<beta>\<gamma>_special_case_1 assms that 
+    by auto
+  have "rk {\<alpha>, \<beta>, \<gamma>} \<le> 2" if "rk {B', P} = 1"
+    using rk_\<alpha>\<beta>\<gamma>_special_case_2 assms that
+    by auto
+  have "rk {\<alpha>, \<beta>, \<gamma>} \<le> 2" if "rk {C', P} = 1"
+    using rk_\<alpha>\<beta>\<gamma>_special_case_3 assms that
+    by auto
+  thus "rk {\<alpha>, \<beta>, \<gamma>} \<le> 2"
+    using \<open>\<lbrakk>rk {A', P} = 2; rk {B', P} = 2; rk {C', P} = 2\<rbrakk> \<Longrightarrow> rk {\<alpha>, \<beta>, \<gamma>} \<le> 2\<close> \<open>rk {A', P} = 1 \<Longrightarrow> rk {\<alpha>, \<beta>, \<gamma>} \<le> 2\<close> \<open>rk {B', P} = 1 \<Longrightarrow> rk {\<alpha>, \<beta>, \<gamma>} \<le> 2\<close> rk_couple rk_singleton_bis 
+    by blast
+qed
+
+end
