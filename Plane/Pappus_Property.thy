@@ -2,7 +2,10 @@ theory Pappus_Property
   imports Main Projective_Plane_Axioms
 begin
 
-(* Contents:
+(*
+Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .
+ 
+Contents:
 - We give two formulations of Pappus's property for a configuration of nine points
  [is_pappus1] [is_pappus2].
 - We prove the equivalence of these two formulations [pappus_equiv].
