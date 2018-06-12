@@ -2,7 +2,10 @@ theory Pascal_Property
   imports Main Projective_Plane_Axioms Pappus_Property
 begin
 
-(* Contents:
+(*
+Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .
+ 
+Contents:
 - A hexagon is pascal if its three opposite sides meet in collinear points [is_pascal].
 - A plane is pascal, or has Pascal property, if for every hexagon of that plane
 Pascal property is stable under any permutation of that hexagon. 
