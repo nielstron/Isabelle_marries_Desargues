@@ -2,11 +2,15 @@ theory Projective_Space_Axioms
   imports Main
 begin
 
-(* Contents:
+(*
+Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .
+  
+Contents:
 - We introduce the types of points and lines and an incidence relation between them.
 - A set of axioms for the (3-dimensional) projective space. 
 An alternative set of axioms could use planes as basic objects 
-in addition to points and lines  *)
+in addition to points and lines  
+*)
 
 (*** The axioms of the Projective Space ***)
 
