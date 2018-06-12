@@ -3,6 +3,8 @@ theory Desargues_3D
 begin
 
 (*
+Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .
+
 Contents:
 - We prove Desargues's theorem: if two triangles ABC and A'B'C' are perspective from a point P (ie. 
 the lines AA', BB' and CC' are concurrent in P), then they are perspective from a line (ie. the points
