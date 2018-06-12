@@ -2,11 +2,15 @@ theory Desargues_Property
   imports Main Projective_Plane_Axioms Pappus_Property Pascal_Property
 begin
 
-(* Contents:
+(* 
+Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .
+
+Contents:
 - We give the Desargues property, [desargues_prop], that states that if two triangles are perspective 
 from a point, then they are perspective from a line. 
 Note that some planes satisfy that property and some others don't, hence the Desargues property is
-not a theorem though it is a theorem in projective space geometry *)
+not a theorem though it is a theorem in projective space geometry 
+*)
 
 definition distinct3 :: "[Points, Points, Points] \<Rightarrow> bool" where
 "distinct3 A B C \<equiv> A \<noteq> B \<and> A \<noteq> C \<and> B \<noteq> C"
