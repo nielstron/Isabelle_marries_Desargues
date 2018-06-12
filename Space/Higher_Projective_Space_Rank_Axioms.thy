@@ -2,6 +2,14 @@ theory Higher_Projective_Space_Rank_Axioms
   imports Main
 begin
 
+(*
+Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .
+
+Contents:
+-Following [1] (cf. References) we introduce a set of axioms for projective space geometry based on
+the notions of matroid and rank.
+*)
+
 (* We have a type of points *)
 typedecl "Points"
 
@@ -29,7 +37,7 @@ without adding any entity to the theory or modifying the language of the theory 
 
 (*
 References:
-- Nicolas Magaud, Julien Narboux, Pascal Schreck, "A Case Study in Formalizing Projective Geometry
+- [1] Nicolas Magaud, Julien Narboux, Pascal Schreck, "A Case Study in Formalizing Projective Geometry
 in Coq: Desargues Theorem", Computational Geometry: Theory and Applications, 45 (2012) 406-424.
 *)
 
