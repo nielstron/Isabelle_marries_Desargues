@@ -2,7 +2,10 @@ theory Higher_Projective_Space_Axioms
   imports Main
 begin
 
-(* Contents:
+(*
+Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .
+ 
+Contents:
 - We introduce the types of points and lines and an incidence relation between them.
 - A set of axioms for higher projective spaces, i.e. we allow models of dimension > 3. 
 *)
