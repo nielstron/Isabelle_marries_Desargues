@@ -2,7 +2,10 @@ theory Projective_Plane_Axioms
   imports Main
 begin
 
-(* Contents:
+(*
+Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .
+ 
+Contents:
 - We introduce the types of points and lines and an incidence relation between them.
 - A set of axioms for the projective plane (the models of these axioms are 
 n-dimensional with n \<ge> 2). 
@@ -48,7 +51,6 @@ ax3: "\<exists>A B C D. distinct4 A B C D \<and> (\<forall>l.
 (* Biblio.:
 - Nicolas Magaud, Julien Narboux, Pascal Schreck; coq-projective-geometry; code available at
 https://github.com/coq-contribs/projective-geometry  *)
-
 
 
 end
