@@ -876,7 +876,7 @@ proof-
   then have f5:"rk {A', C', C, \<beta>} = 2"
     using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>]
     by (metis insert_commute le_antisym matroid_ax_2 subset_insertI)
-  have "rk {A, A', C, a, C', \<beta>} + rk {A, C, \<beta>} \<le> rk {A, A', C', C, \<beta>} + rk {a, A, C, \<beta>}"
+  have "rk {A, A', C, a, C', \<beta>} + rk {A, C, \<beta>} \<le> rk {A, A', C', C, \<beta>} + rk {a, A, C, \<beta>}" for a
     using matroid_ax_3_alt[of "{A, C, \<beta>}" "{A, A', C', C, \<beta>}" "{a, A, C, \<beta>}"]
     by (simp add: insert_commute)
   then have f6:"rk {A, A', C', C, \<beta>} \<ge> 3"
@@ -900,7 +900,7 @@ proof-
   then have f7:"rk {A', B', B, \<gamma>} = 2"
     using assms(1) desargues_config_2D_def[of A B C A' B' C' P \<alpha> \<beta> \<gamma>]
     by (metis insert_commute le_antisym matroid_ax_2 subset_insertI)
-  have "rk {A, A', B, a, B', \<gamma>} + rk {A, B, \<gamma>} \<le> rk {A, A', B', B, \<gamma>} + rk {a, A, B, \<gamma>}"
+  have "rk {A, A', B, a, B', \<gamma>} + rk {A, B, \<gamma>} \<le> rk {A, A', B', B, \<gamma>} + rk {a, A, B, \<gamma>}" for a
     using matroid_ax_3_alt[of "{A, B, \<gamma>}" "{A, A', B', B, \<gamma>}" "{a, A, B, \<gamma>}"]
     by (simp add: insert_commute)
   then have f8:"rk {A, A', B', B, \<gamma>} \<ge> 3"
