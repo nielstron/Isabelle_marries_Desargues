@@ -145,7 +145,7 @@ proof-
     and "rk(X \<union> {C}) = rk(X \<union> {D})" and "rk(X \<union> {D}) = rk X"
     using assms that(1) that(2) that(3) that(4) 
     by linarith
-  from f1 and f2 have "false" if "rk(X \<union> {A}) = rk(X \<union> {B})" and "rk(X \<union> {B}) = rk(X \<union> {C})" 
+  from f1 and f2 have "False" if "rk(X \<union> {A}) = rk(X \<union> {B})" and "rk(X \<union> {B}) = rk(X \<union> {C})" 
     and "rk(X \<union> {C}) = rk(X \<union> {D})" and "rk(X \<union> {D}) = rk X"
     using that(1) that(2) that(3) that(4) 
     by linarith
