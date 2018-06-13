@@ -116,7 +116,7 @@ qed
 lemma coplanar_5_bis :
   assumes "rk {A, B, C} = 3" and "rk {B, C, \<alpha>} = 2" and "rk {A, B, \<gamma>} = 2"
   shows "rk {A, B, C, \<alpha>, \<gamma>} = 3"
-  by (smt assms(1) assms(2) assms(3) coplanar_5 insert_commute)
+  by (smt assms coplanar_5 insert_commute)
 
 lemma desargues_config_3D_coplanar_5_bis :
   assumes "desargues_config_3D A B C A' B' C' P \<alpha> \<beta> \<gamma>"
