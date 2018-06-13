@@ -11,29 +11,30 @@ in a projective plane.
 lemma col_ABC_ABD_1:
   assumes "A \<noteq> B" and "col A B C" and "col A B D"
   shows "col B C D"
-  by (metis assms(1) assms(2) assms(3) ax_uniqueness col_def)
+  by (metis assms ax_uniqueness col_def)
 
 lemma col_ABC_ABD_2:
   assumes "A \<noteq> B" and "col A B C" and "col A B D"
   shows "col A C D"
-  by (metis assms(1) assms(2) assms(3) ax_uniqueness col_def)
+  by (metis assms ax_uniqueness col_def)
 
 lemma col_line_eq_1:
   assumes "A \<noteq> B" and "B \<noteq> C"and "col A B C"
   shows "line A B = line B C"
-  by (metis assms(1) assms(2) assms(3) ax_uniqueness col_def incidA_lAB incidB_lAB)
+  by (metis assms ax_uniqueness col_def incidA_lAB incidB_lAB)
 
 lemma col_line_eq_2:
   assumes "A \<noteq> B" and "A \<noteq> C" and "col A B C"
   shows "line A B = line A C"
-  by (metis assms(1) assms(2) assms(3) col_line_eq_1 col_rot_CW line_comm)
+  by (metis assms col_line_eq_1 col_rot_CW line_comm)
 
 lemma desargues_config_not_col_1: 
   assumes "desargues_config A B C A' B' C' M N P R"
   shows "\<not> col A A' B'"
 proof
   assume a1:"col A A' B'"
-  have f1:"A \<noteq> A'" using assms desargues_config_def distinct7_def 
+  have f1:"A \<noteq> A'" 
+    using assms desargues_config_def distinct7_def 
     by blast
   have f2:"col A A' R"
     using assms desargues_config_def meet_3_col_1 
@@ -78,7 +79,8 @@ lemma desargues_config_not_col_3:
 lemma desargues_config_not_col_4:
   assumes "desargues_config A B C A' B' C' M N P R"
   shows "\<not> col A A' C'"
-  using assms desargues_config_not_col_3 desargues_config_rot_CCW by blast
+  using assms desargues_config_not_col_3 desargues_config_rot_CCW 
+  by blast
 
 lemma desargues_config_not_col_5:
   assumes "desargues_config A B C A' B' C' M N P R"
@@ -158,7 +160,7 @@ lemma desargues_config_not_col_12:
 lemma col_inter:
   assumes "A \<noteq> C" and "B \<noteq> C" and "col A B C"
   shows "inter l (line B C) = inter l (line A C)"
-  by (metis assms(1) assms(2) assms(3) col_line_eq_1 col_line_eq_2)
+  by (metis assms col_line_eq_1 col_line_eq_2)
 
 lemma lemma_1:
   assumes "desargues_config A B C A' B' C' M N P R" and "is_pappus"
@@ -282,7 +284,7 @@ lemma lemma_2:
   assumes "desargues_config A B C A' B' C' M N P R" and "incid A (line B' C') \<or> incid C' (line A B)" 
     and "incid C (line A' B') \<or> incid B' (line A C)" and "incid B (line A' C') \<or> incid A' (line B C)"
   shows "col M N P \<or> triangle_circumscribes_triangle A B C A' B' C' \<or> triangle_circumscribes_triangle A' B' C' A B C"
-  by (smt assms(1) assms(2) assms(3) assms(4) ax_uniqueness col_def desargues_config_not_col_1 
+  by (smt assms ax_uniqueness col_def desargues_config_not_col_1 
       desargues_config_not_col_11 desargues_config_not_col_12 desargues_config_not_col_2 
       desargues_config_not_col_3 desargues_config_not_col_9 incidA_lAB incidB_lAB 
       triangle_circumscribes_triangle_def)
