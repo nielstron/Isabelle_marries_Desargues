@@ -24,16 +24,15 @@ consts incid :: "Points \<Rightarrow> Lines \<Rightarrow> bool"
 
 (* Ax1: Any two (distinct) points lie on a (unique) line *)
 axiomatization where
-ax1: "\<forall>P Q. \<exists>l. incid P l \<and> incid Q l"
+ax1: "\<exists>l. incid P l \<and> incid Q l"
 
 (* Ax2: Any two (distinct) lines meet in a (unique) point *)
 axiomatization where
-ax2: "\<forall>l m. \<exists>P. incid P l \<and> incid P m"
+ax2: "\<exists>P. incid P l \<and> incid P m"
 
 (* The uniqueness part *)
 axiomatization where
-ax_uniqueness: "\<forall>P Q l m. incid P l \<longrightarrow> incid Q l \<longrightarrow> incid P m \<longrightarrow> incid Q m \<longrightarrow>
-P = Q \<or> l = m"
+ax_uniqueness: "incid P l \<longrightarrow> incid Q l \<longrightarrow> incid P m \<longrightarrow> incid Q m \<longrightarrow> P = Q \<or> l = m"
 
 definition distinct4 :: "Points \<Rightarrow> Points \<Rightarrow> Points \<Rightarrow> Points \<Rightarrow> bool" where
 "distinct4 A B C D \<equiv> (A \<noteq> B) \<and> (A \<noteq> C) \<and> (A \<noteq> D) \<and> (B \<noteq> C) \<and> (B \<noteq> D) \<and> (C \<noteq> D)"
