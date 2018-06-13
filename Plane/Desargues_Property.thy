@@ -24,12 +24,14 @@ definition meet_in :: "Lines \<Rightarrow> Lines => Points => bool " where
 lemma meet_col_1:
   assumes "meet_in (line A B) (line C D) P"
   shows "col A B P"
-  using assms col_def incidA_lAB incidB_lAB meet_in_def by blast
+  using assms col_def incidA_lAB incidB_lAB meet_in_def 
+  by blast
 
 lemma meet_col_2:
   assumes "meet_in (line A B) (line C D) P"
   shows "col C D P"
-  using assms meet_col_1 meet_in_def by auto
+  using assms meet_col_1 meet_in_def 
+  by auto
 
 definition meet_3_in :: "[Lines, Lines, Lines, Points] \<Rightarrow> bool" where
 "meet_3_in l m n P \<equiv> meet_in l m P \<and> meet_in l n P"
@@ -37,27 +39,32 @@ definition meet_3_in :: "[Lines, Lines, Lines, Points] \<Rightarrow> bool" where
 lemma meet_all_3:
   assumes "meet_3_in l m n P"
   shows "meet_in m n P"
-  using assms meet_3_in_def meet_in_def by auto
+  using assms meet_3_in_def meet_in_def 
+  by auto
 
 lemma meet_comm:
   assumes "meet_in l m P"
   shows "meet_in m l P"
-  using assms meet_in_def by auto
+  using assms meet_in_def 
+  by auto
 
 lemma meet_3_col_1:
   assumes "meet_3_in (line A B) m n P"
   shows "col A B P"
-  using assms meet_3_in_def meet_col_2 meet_in_def by auto
+  using assms meet_3_in_def meet_col_2 meet_in_def 
+  by auto
 
 lemma meet_3_col_2:
   assumes "meet_3_in l (line A B) n P"
   shows "col A B P"
-  using assms col_def incidA_lAB incidB_lAB meet_3_in_def meet_in_def by blast
+  using assms col_def incidA_lAB incidB_lAB meet_3_in_def meet_in_def 
+  by blast
 
 lemma meet_3_col_3:
   assumes "meet_3_in l m (line A B) P"
   shows "col A B P"
-  using assms meet_3_col_2 meet_3_in_def by auto
+  using assms meet_3_col_2 meet_3_in_def 
+  by auto
 
 definition distinct7 ::
   "[Points, Points, Points, Points, Points, Points, Points] \<Rightarrow> bool" where
@@ -88,13 +95,15 @@ meet_in (line A C) (line A' C') N \<and> meet_in (line A B) (line A' B') P"
 lemma distinct7_rot_CW:
   assumes "distinct7 A B C D E F G"
   shows "distinct7 C A B F D E G"
-  using assms distinct7_def by auto
+  using assms distinct7_def 
+  by auto
 
 (* Desargues configurations are stable under any rotation (i,j,k) of {1,2,3} *)
 lemma desargues_config_rot_CW:
   assumes "desargues_config A B C A' B' C' M N P R"
   shows "desargues_config C A B C' A' B' P M N R"
-  by (smt assms col_rot_CW desargues_config_def distinct3l_def distinct7_rot_CW line_comm meet_3_in_def meet_all_3 meet_comm)
+  by (smt assms col_rot_CW desargues_config_def distinct3l_def distinct7_rot_CW line_comm 
+      meet_3_in_def meet_all_3 meet_comm)
 
 lemma desargues_config_rot_CCW:
   assumes "desargues_config A B C A' B' C' M N P R"
@@ -126,12 +135,15 @@ lemma perspective_from_point_desargues_config:
     "line A C \<noteq> line A' C'" and "line B C \<noteq> line B' C'"
   shows "desargues_config A B C A' B' C' (inter (line B C) (line B' C')) (inter (line A C) (line A' C')) 
     (inter (line A B) (line A' B')) R"
-  by (smt are_perspective_from_point_def assms(1) assms(2) assms(3) assms(4) col_line_ext_1 desargues_config_def distinct3_def incidB_lAB inter_line_ext_2 line_comm meet_in_inter triangle_def uniq_inter)
+  by (smt are_perspective_from_point_def assms(1) assms(2) assms(3) assms(4) col_line_ext_1 
+      desargues_config_def distinct3_def incidB_lAB inter_line_ext_2 line_comm meet_in_inter 
+      triangle_def uniq_inter)
 
 (* Now, we state Desargues property in a textbook-like form *)
 definition desargues_prop :: "bool" where
 "desargues_prop \<equiv> 
-\<forall>A B C A' B' C' P. are_perspective_from_point A B C A' B' C' P \<longrightarrow> are_perspective_from_line A B C A' B' C'"
+\<forall>A B C A' B' C' P. 
+  are_perspective_from_point A B C A' B' C' P \<longrightarrow> are_perspective_from_line A B C A' B' C'"
 
 end
 
