@@ -2,15 +2,17 @@ theory Pappus_Property
   imports Main Projective_Plane_Axioms
 begin
 
-(*
-Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .
+(* Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .*)
  
+text \<open>
 Contents:
-- We give two formulations of Pappus's property for a configuration of nine points
+\<^item> We give two formulations of Pappus's property for a configuration of nine points
  [is_pappus1] [is_pappus2].
-- We prove the equivalence of these two formulations [pappus_equiv].
-- We state Pappus property for a plane [is_pappus]. 
-*)
+\<^item> We prove the equivalence of these two formulations [pappus_equiv].
+\<^item> We state Pappus property for a plane [is_pappus]. 
+\<close>
+
+section \<open>Pappus's Property\<close>
 
 definition col :: "[Points, Points, Points] \<Rightarrow> bool" where
 "col A B C \<equiv> \<exists>l. incid A l \<and> incid B l \<and> incid C l"
@@ -267,7 +269,7 @@ lemma pappus_equiv: "is_pappus1 A B C A' B' C' P Q R = is_pappus2 A B C A' B' C'
   using pappus12 pappus21 
   by blast
 
-(* Finally, we give Pappus property for a plane stating that the diagonal points 
+(* Finally, we give Pappus's property for a plane stating that the diagonal points 
 of any hexagon of that plane, whose vertices lie alternately on two lines, are collinear *)
 
 definition is_pappus :: "bool" where
