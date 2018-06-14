@@ -2,15 +2,15 @@ theory Higher_Projective_Space_Axioms
   imports Main
 begin
 
-(*
-Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .
- 
-Contents:
-- We introduce the types of points and lines and an incidence relation between them.
-- A set of axioms for higher projective spaces, i.e. we allow models of dimension > 3. 
-*)
+(* Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .*)
 
-(*** The axioms for higher projective geometry ***)
+text \<open>
+Contents:
+\<^item> We introduce the types of points and lines and an incidence relation between them.
+\<^item> A set of axioms for higher projective spaces, i.e. we allow models of dimension > 3. 
+\<close>
+
+section \<open>The axioms for Higher Projective Geometry\<close>
 
 (* One has a type of points *)
 typedecl "points"
@@ -52,16 +52,9 @@ lines have unlimited extent, i.e. there is always a point between two distinct p
 axiomatization where
 ax3: "\<exists>A B C. distinct3 A B C \<and> (incid A l) \<and> (incid B l) \<and> (incid C l)"
 
-(* Ax4: There exists two lines that do not meet, 
-hence the geometry is at least 3-dimensional *)
+(* Ax4: There exists two lines that do not meet, hence the geometry is at least 3-dimensional *)
 axiomatization where
 ax4: "\<exists>l m.\<forall>P. \<not>(incid P l \<and> incid P m)"
 
-
-(* 
-Biblio.:
-- Nicolas Magaud, Julien Narboux, Pascal Schreck; coq-projective-geometry; code available at
-https://github.com/coq-contribs/projective-geometry.
-*)
 
 end
