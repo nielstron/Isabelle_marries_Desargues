@@ -2,15 +2,17 @@ theory Desargues_3D
   imports Main Higher_Projective_Space_Rank_Axioms Matroid_Rank_Properties
 begin
 
-(*
-Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .
+(* Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .*)
 
+text \<open>
 Contents:
-- We prove Desargues's theorem: if two triangles ABC and A'B'C' are perspective from a point P (ie. 
+\<^item> We prove Desargues's theorem: if two triangles ABC and A'B'C' are perspective from a point P (ie. 
 the lines AA', BB' and CC' are concurrent in P), then they are perspective from a line (ie. the points
 \<alpha> = BC \<inter> B'C', \<beta> = AC \<inter> A'C' and \<gamma> = AB \<inter> A'B' are collinear).
 In this file we restrict ourself to the case where the two triangles ABC and A'B'C' are not coplanar. 
-*)
+\<close>
+
+section \<open>Desargues's Theorem: The Non-coplanar Case\<close>
 
 definition desargues_config_3D :: 
   "[Points, Points, Points, Points, Points, Points, Points, Points, Points, Points] => bool" 
