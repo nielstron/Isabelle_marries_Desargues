@@ -2,11 +2,15 @@ theory Pappus_Desargues
   imports Main Projective_Plane_Axioms Pappus_Property Pascal_Property Desargues_Property
 begin
 
-(* 
+(* Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .*)
+
+text \<open> 
 Contents:
-- We prove Hessenberg's theorem ([hessenberg_theorem]): Pappus property implies Desargues property 
-in a projective plane. 
-*)
+\<^item> We prove Hessenberg's theorem ([hessenberg_theorem]): Pappus's property implies Desargues's 
+property in a projective plane. 
+\<close>
+
+section \<open>Hessenberg's Theorem\<close>
 
 lemma col_ABC_ABD_1:
   assumes "A \<noteq> B" and "col A B C" and "col A B D"
@@ -463,12 +467,6 @@ corollary pascal_desargues:
   assumes "pascal_prop"
   shows "desargues_prop"
   by (simp add: assms hessenberg_thereom pascal_pappus)
-
-(*
-References:
-- M. Bezem and D. Hendriks, On the Mechanization of the Proof of Hessenberg's Theorem in Coherent Logic,
-J. of Automated Reasoning 40 (1), 2008, pp.61-85.
-*)
 
 end
 
