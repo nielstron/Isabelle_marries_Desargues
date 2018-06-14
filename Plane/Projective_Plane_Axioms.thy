@@ -2,16 +2,16 @@ theory Projective_Plane_Axioms
   imports Main
 begin
 
-(*
-Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .
- 
-Contents:
-- We introduce the types of points and lines and an incidence relation between them.
-- A set of axioms for the projective plane (the models of these axioms are 
-n-dimensional with n \<ge> 2). 
-*)
+(* Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .*)
 
-(** The Axioms of the Projective Plane **)
+text \<open>
+Contents:
+\<^item> We introduce the types of points and lines and an incidence relation between them.
+\<^item> A set of axioms for the projective plane (the models of these axioms are 
+n-dimensional with n \<ge> 2). 
+\<close>
+
+section \<open>The Axioms of the Projective Plane\<close>
 
 (* One has a type of points *)
 typedecl "Points"
@@ -46,10 +46,6 @@ ax3: "\<exists>A B C D. distinct4 A B C D \<and> (\<forall>l.
 (incid B l \<and> incid C l \<longrightarrow> \<not>(incid A l) \<and> \<not>(incid D l)) \<and>
 (incid B l \<and> incid D l \<longrightarrow> \<not>(incid A l) \<and> \<not>(incid C l)) \<and>
 (incid C l \<and> incid D l \<longrightarrow> \<not>(incid A l) \<and> \<not>(incid B l)))"
-
-(* Biblio.:
-- Nicolas Magaud, Julien Narboux, Pascal Schreck; coq-projective-geometry; code available at
-https://github.com/coq-contribs/projective-geometry  *)
 
 
 end
