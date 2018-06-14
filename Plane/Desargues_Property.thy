@@ -2,15 +2,17 @@ theory Desargues_Property
   imports Main Projective_Plane_Axioms Pappus_Property Pascal_Property
 begin
 
-(* 
-Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .
+(* Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .*)
 
+text \<open>
 Contents:
-- We give the Desargues property, [desargues_prop], that states that if two triangles are perspective 
+\<^item> We formalize Desargues's property, [desargues_prop], that states that if two triangles are perspective 
 from a point, then they are perspective from a line. 
-Note that some planes satisfy that property and some others don't, hence the Desargues property is
-not a theorem though it is a theorem in projective space geometry 
-*)
+Note that some planes satisfy that property and some others don't, hence Desargues's property is
+not a theorem though it is a theorem in projective space geometry. 
+\<close>
+
+section \<open>Desargues's Property\<close>
 
 definition distinct3 :: "[Points, Points, Points] \<Rightarrow> bool" where
 "distinct3 A B C \<equiv> A \<noteq> B \<and> A \<noteq> C \<and> B \<noteq> C"
@@ -139,7 +141,7 @@ lemma perspective_from_point_desargues_config:
       desargues_config_def distinct3_def incidB_lAB inter_line_ext_2 line_comm meet_in_inter 
       triangle_def uniq_inter)
 
-(* Now, we state Desargues property in a textbook-like form *)
+(* Now, we state Desargues's property in a textbook-like form *)
 definition desargues_prop :: "bool" where
 "desargues_prop \<equiv> 
 \<forall>A B C A' B' C' P. 
