@@ -2,13 +2,15 @@ theory Matroid_Rank_Properties
   imports Main Higher_Projective_Space_Rank_Axioms
 begin
 
-(*
-Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .
+(* Author: Anthony Bordg, University of Cambridge, apdb3@cam.ac.uk .*)
 
+text \<open>
 Contents:
-- In this file we introduce the basic lemmas and properties derived from our based-rank axioms
+\<^item> In this file we introduce the basic lemmas and properties derived from our based-rank axioms
 that will allow us to simplify our future proofs.
-*)
+\<close>
+
+section \<open>Proof Techniques Using Ranks\<close>
 
 lemma matroid_ax_3_alt:
   assumes "I \<subseteq> X \<inter> Y"
@@ -222,11 +224,6 @@ proof-
     by (simp add: \<open>rk {A, B} \<le> 2\<close> le_antisym)
 qed
 
-(*
-References:
-- Nicolas Magaud, Julien Narboux, Pascal Schreck, "A Case Study in Formalizing Projective Geometry
-in Coq: Desargues Theorem", Computational Geometry: Theory and Applications, 45 (2012) 406-424.
-*)
 
 end
 
