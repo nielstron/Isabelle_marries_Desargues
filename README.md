@@ -1,2 +1,2 @@
 # Isabelle_marries_Desargues
-A tentative formalization of projective geometry in Isabelle
+A formalization of projective geometry in Isabelle (Desargues's theorem, Hessenberg's theorem).
