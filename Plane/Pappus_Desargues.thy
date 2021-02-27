@@ -12,6 +12,9 @@ property in a projective plane.
 
 section \<open>Hessenberg's Theorem\<close>
 
+context projective_plane
+begin
+
 lemma col_ABC_ABD_1:
   assumes "A \<noteq> B" and "col A B C" and "col A B D"
   shows "col B C D"
@@ -134,8 +137,7 @@ qed
 lemma desargues_config_not_col_8:
   assumes "desargues_config A B C A' B' C' M N P R"
   shows "\<not> col A C C'"
-  by (metis assms col_ABA col_line_eq_1 col_rot_CW desargues_config_def desargues_config_not_col_3 
-      desargues_config_not_col_7 distinct3l_def meet_3_col_1 meet_3_col_2 meet_3_col_3)
+  by (smt (z3) assms col_ABA col_line_eq_1 col_rot_CW desargues_config_def desargues_config_not_col_6 desargues_config_not_col_7 distinct3l_def meet_3_col_1 meet_3_in_def projective_plane.meet_col_2 projective_plane_axioms)
 
 lemma desargues_config_not_col_9:
   assumes "desargues_config A B C A' B' C' M N P R"
@@ -280,7 +282,7 @@ corollary corollary_1:
   by (metis assms(1) assms(2) col_rot_CW desargues_config_rot_CCW lemma_1 line_comm)
 
 definition triangle_circumscribes_triangle :: 
-  "[Points, Points, Points, Points, Points, Points] \<Rightarrow> bool" where
+  "['point, 'point, 'point, 'point, 'point, 'point] \<Rightarrow> bool" where
 "triangle_circumscribes_triangle A' B' C' A B C \<equiv> incid A (line B' C') \<and> incid C (line A' B') \<and>
 incid B (line A' C')"
 
@@ -373,8 +375,7 @@ proof-
           desargues_config_not_col_9 incidB_lAB incid_inter_left incid_inter_right 
           line_comm meet_3_col_2 meet_3_col_3 meet_col_1 meet_col_2 triangle_circumscribes_triangle_def)
     have f2:"A \<noteq> B' \<and> T \<noteq> A' \<and> line A B' \<noteq> line T A'"
-      by (smt T_def assms(2) col_def desargues_config_def desargues_config_not_col_1 
-          desargues_config_not_col_9 incidB_lAB incid_C_AB incid_inter_left line_comm meet_in_def)
+      by (smt (z3) T_def assms(2) ax_uniqueness col_def desargues_config_def desargues_config_not_col_1 desargues_config_not_col_9 incidA_lAB incid_inter_left line_comm meet_in_def)
     have f3:"S \<noteq> B' \<and> B \<noteq> A'"
       by (smt S_def assms(2) assms(3) ax_uniqueness col_A_B_ABl col_line_eq_2 col_rot_CW 
           desargues_config_def desargues_config_not_col_2 desargues_config_not_col_5 
@@ -392,8 +393,7 @@ proof-
       by (metis S_def T_def assms(2) col_ABC_ABD_1 col_A_B_ABl col_def desargues_config_def incidA_lAB 
           incidB_lAB is_a_intersec_def meet_in_def)
     have f8:"is_a_intersec M A B' T A'"
-      by (metis \<open>col M T A'\<close> assms(2) assms(3) col_rot_CW desargues_config_def f2 incidA_lAB incidB_lAB 
-          is_a_intersec_def meet_col_2 triangle_circumscribes_triangle_def uniq_inter)
+      by (smt (verit) \<open>col M T A'\<close> assms(2) assms(3) col_rot_CW desargues_config_def f2 incidA_lAB incidB_lAB is_a_intersec_def meet_col_2 triangle_circumscribes_triangle_def uniq_inter)
     have f9:"is_a_intersec N S B' B A'"
       using \<open>col N S B'\<close> assms(2) assms(3) col_def desargues_config_def incidA_lAB is_a_intersec_def 
         meet_in_def triangle_circumscribes_triangle_def 

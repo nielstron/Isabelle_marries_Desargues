@@ -13,7 +13,10 @@ Pascal property is stable under any permutation of that hexagon.
 
 section \<open>Pascal's Property\<close>
 
-definition inters :: "Lines \<Rightarrow> Lines \<Rightarrow> Points set" where
+context projective_plane
+begin
+
+definition inters :: "'line \<Rightarrow> 'line \<Rightarrow> 'point set" where
 "inters l m \<equiv> {P. incid P l \<and> incid P m}"
 
 lemma inters_is_singleton:
@@ -22,7 +25,7 @@ lemma inters_is_singleton:
   using assms ax_uniqueness inters_def 
   by blast
 
-definition inter :: "Lines \<Rightarrow> Lines \<Rightarrow> Points" where
+definition inter :: "'line \<Rightarrow> 'line \<Rightarrow> 'point" where
 "inter l m \<equiv> @P. P \<in> inters l m"
 
 lemma uniq_inter:
@@ -41,7 +44,7 @@ qed
 
 (* The configuration of a hexagon where the three pairs of opposite sides meet in 
 collinear points *)
-definition is_pascal :: "[Points, Points, Points, Points, Points, Points] \<Rightarrow> bool" where
+definition is_pascal :: "['point, 'point, 'point, 'point, 'point, 'point] \<Rightarrow> bool" where
 "is_pascal A B C D E F \<equiv> distinct6 A B C D E F \<longrightarrow> line B C \<noteq> line E F \<longrightarrow> line C D \<noteq> line A F
 \<longrightarrow> line A B \<noteq> line D E \<longrightarrow> 
 (let P = inter (line B C) (line E F) in
@@ -167,7 +170,7 @@ lemma col_A_B_lAB: "col A B (inter l (line A B))"
 lemma inter_is_a_intersec: "is_a_intersec (inter (line A B) (line C D)) A B C D"
   by (simp add: col_A_B_ABl col_A_B_lAB col_rot_CW is_a_intersec_def)
 
-definition line_ext :: "Lines \<Rightarrow> Points set" where
+definition line_ext :: "'line \<Rightarrow> 'point set" where
 "line_ext l \<equiv> {P. incid P l}"
 
 lemma line_left_inter_1: 
@@ -306,7 +309,7 @@ proof-
       (inter (line P W) (line A R))" if "distinct6 P Q R A C W"
         using assms(1) is_pappus_def is_pappus2_def \<open>distinct6 P Q R A C W\<close> \<open>col P Q R\<close>
           \<open>col A C W\<close> inter_is_a_intersec inter_line_line_comm 
-        by metis
+        by presburger
       have "col X Y Z" if "C \<in> line_ext (line E F)"
         using P_def \<open>P = C \<Longrightarrow> col X Y Z\<close> \<open>line B C \<noteq> line E F\<close> incidB_lAB line_ext_def that uniq_inter 
         by auto 
@@ -374,9 +377,9 @@ proof-
         by (metis P_def W_def X_def Y_def Z_def \<open>A = W \<Longrightarrow> col X Y Z\<close> \<open>A \<in> line_ext (line C D) \<Longrightarrow> col X Y Z\<close> 
             \<open>A \<in> line_ext (line D E) \<Longrightarrow> col X Y Z\<close> \<open>C = W \<Longrightarrow> col X Y Z\<close> \<open>C \<in> line_ext (line E F) \<Longrightarrow> col X Y Z\<close> 
             \<open>P = A \<Longrightarrow> col X Y Z\<close> \<open>P = C \<Longrightarrow> col X Y Z\<close> \<open>P = Q \<Longrightarrow> col X Y Z\<close> \<open>P = R \<Longrightarrow> col X Y Z\<close> 
-            \<open>Pascal_Property.inter (line B C) (line E F) = Pascal_Property.inter (line A C) (line E F) \<Longrightarrow> col X Y Z\<close> 
+            \<open>inter (line B C) (line E F) = inter (line A C) (line E F) \<Longrightarrow> col X Y Z\<close> 
             \<open>Q = A \<Longrightarrow> col X Y Z\<close> \<open>Q = C \<Longrightarrow> col X Y Z\<close> \<open>Q = R \<Longrightarrow> col X Y Z\<close> \<open>Q = W \<Longrightarrow> col X Y Z\<close> \<open>R = A \<Longrightarrow> col X Y Z\<close> 
-            \<open>R = C \<Longrightarrow> col X Y Z\<close> \<open>R = W \<Longrightarrow> col X Y Z\<close> \<open>\<lbrakk>distinct6 P Q R A C W; C \<notin> line_ext (line E F); A \<notin> line_ext (line D E); line B C \<noteq> line A B; line E F \<noteq> line A F; A \<notin> line_ext (line C D); Pascal_Property.inter (line B C) (line E F) \<noteq> Pascal_Property.inter (line A C) (line E F)\<rbrakk> \<Longrightarrow> col (Pascal_Property.inter (line A C) (line E F)) (Pascal_Property.inter (line C D) (line B F)) (Pascal_Property.inter (line A B) (line D E))\<close> 
+            \<open>R = C \<Longrightarrow> col X Y Z\<close> \<open>R = W \<Longrightarrow> col X Y Z\<close> \<open>\<lbrakk>distinct6 P Q R A C W; C \<notin> line_ext (line E F); A \<notin> line_ext (line D E); line B C \<noteq> line A B; line E F \<noteq> line A F; A \<notin> line_ext (line C D); inter (line B C) (line E F) \<noteq> inter (line A C) (line E F)\<rbrakk> \<Longrightarrow> col (inter (line A C) (line E F)) (inter (line C D) (line B F)) (inter (line A B) (line D E))\<close> 
             \<open>line B C = line A B \<Longrightarrow> col X Y Z\<close> \<open>line E F = line A F \<Longrightarrow> col X Y Z\<close> distinct6_def line_comm)
      qed
      show "is_pascal B A C D E F"
@@ -435,6 +438,8 @@ lemma pascal_pappus:
 theorem pappus_iff_pascal: "is_pappus = pascal_prop"
   using pappus_pascal pascal_pappus 
   by blast
+
+end
 
 end
 
