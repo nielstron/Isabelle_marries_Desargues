@@ -14,18 +14,21 @@ Contents:
 
 section \<open>Pappus's Property\<close>
 
-definition col :: "[Points, Points, Points] \<Rightarrow> bool" where
+context projective_plane
+begin
+
+definition col :: "['point, 'point, 'point] \<Rightarrow> bool" where
 "col A B C \<equiv> \<exists>l. incid A l \<and> incid B l \<and> incid C l"
 
 definition distinct6 ::
-  "[Points, Points, Points, Points, Points, Points] \<Rightarrow> bool" where
+  "['point, 'point, 'point, 'point, 'point, 'point] \<Rightarrow> bool" where
 "distinct6 A B C D E F \<equiv> (A \<noteq> B) \<and> (A \<noteq> C) \<and> (A \<noteq> D) \<and> (A \<noteq> E) \<and> (A \<noteq> F) \<and>
 (B \<noteq> C) \<and> (B \<noteq> D) \<and> (B \<noteq> E) \<and> (B \<noteq> F) \<and>
 (C \<noteq> D) \<and> (C \<noteq> E) \<and> (C \<noteq> F) \<and>
 (D \<noteq> E) \<and> (D \<noteq> F) \<and>
 (E \<noteq> F)"
 
-definition lines :: "Points \<Rightarrow> Points \<Rightarrow> Lines set" where
+definition lines :: "'point \<Rightarrow> 'point \<Rightarrow> 'line set" where
 "lines P Q \<equiv> {l. incid P l \<and> incid Q l}"
 
 lemma uniq_line:
@@ -34,32 +37,32 @@ lemma uniq_line:
   using assms lines_def ax_uniqueness 
   by blast
 
-definition line :: "Points \<Rightarrow> Points \<Rightarrow> Lines" where
+definition line :: "'point \<Rightarrow> 'point \<Rightarrow> 'line" where
 "line P Q \<equiv> @l. incid P l \<and> incid Q l"
 
 
 (* The point P is the intersection of the lines AB and CD. For P to be well-defined,
 A and B should be distinct, C and D should be distinct, and the lines AB and CD should
 be distinct *)
-definition is_a_proper_intersec :: "[Points, Points, Points, Points, Points] \<Rightarrow> bool" where
+definition is_a_proper_intersec :: "['point, 'point, 'point, 'point, 'point] \<Rightarrow> bool" where
 "is_a_proper_intersec P A B C D \<equiv> (A \<noteq> B) \<and> (C \<noteq> D) \<and> (line A B \<noteq> line C D)
 \<and> col P A B \<and> col P C D"
 
 (* We state a first form of Pappus's property *)
 definition is_pappus1 :: 
-"[Points, Points, Points, Points, Points, Points, Points, Points, Points] => bool " where
+"['point, 'point, 'point, 'point, 'point, 'point, 'point, 'point, 'point] => bool " where
 "is_pappus1 A B C A' B' C' P Q R \<equiv> 
   distinct6 A B C A' B' C' \<longrightarrow> col A B C \<longrightarrow> col A' B' C'
   \<longrightarrow> is_a_proper_intersec P A B' A' B \<longrightarrow> is_a_proper_intersec Q B C' B' C
   \<longrightarrow> is_a_proper_intersec R A C' A' C 
   \<longrightarrow> col P Q R"
 
-definition is_a_intersec :: "[Points, Points, Points, Points, Points] \<Rightarrow> bool" where
+definition is_a_intersec :: "['point, 'point, 'point, 'point, 'point] \<Rightarrow> bool" where
 "is_a_intersec P A B C D \<equiv> col P A B \<and> col P C D"
 
 (* We state a second form of Pappus's property *)
 definition is_pappus2 ::
-"[Points, Points, Points, Points, Points, Points, Points, Points, Points] \<Rightarrow> bool" where
+"['point, 'point, 'point, 'point, 'point, 'point, 'point, 'point, 'point] \<Rightarrow> bool" where
 "is_pappus2 A B C A' B' C' P Q R \<equiv> 
   (distinct6 A B C A' B' C' \<or> (A \<noteq> B' \<and> A'\<noteq> B \<and> line A B' \<noteq> line A' B \<and> 
   B \<noteq> C' \<and> B' \<noteq> C \<and> line B C' \<noteq> line B' C \<and> 
@@ -275,4 +278,5 @@ of any hexagon of that plane, whose vertices lie alternately on two lines, are c
 definition is_pappus :: "bool" where
 "is_pappus \<equiv> \<forall>A B C D E F P Q R. is_pappus2 A B C D E F P Q R"
 
+end
 end

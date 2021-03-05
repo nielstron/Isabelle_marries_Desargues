@@ -12,6 +12,9 @@ that will allow us to simplify our future proofs.
 
 section \<open>Proof Techniques Using Ranks\<close>
 
+context higher_projective_space_rank
+begin
+
 lemma matroid_ax_3_alt:
   assumes "I \<subseteq> X \<inter> Y"
   shows "rk (X \<union> Y) + rk I \<le> rk X + rk Y"
@@ -226,7 +229,7 @@ qed
 
 
 end
-
+end
 
 
 

@@ -14,13 +14,16 @@ not a theorem though it is a theorem in projective space geometry.
 
 section \<open>Desargues's Property\<close>
 
-definition distinct3 :: "[Points, Points, Points] \<Rightarrow> bool" where
+context projective_plane
+begin
+
+definition distinct3 :: "['point, 'point, 'point] \<Rightarrow> bool" where
 "distinct3 A B C \<equiv> A \<noteq> B \<and> A \<noteq> C \<and> B \<noteq> C"
 
-definition triangle :: "[Points, Points, Points] \<Rightarrow> bool" where
+definition triangle :: "['point, 'point, 'point] \<Rightarrow> bool" where
 "triangle A B C \<equiv> distinct3 A B C \<and> (line A B \<noteq> line A C)"
 
-definition meet_in :: "Lines \<Rightarrow> Lines => Points => bool " where
+definition meet_in :: "'line \<Rightarrow> 'line => 'point => bool " where
 "meet_in l m P \<equiv> incid P l \<and> incid P m"
 
 lemma meet_col_1:
@@ -35,7 +38,7 @@ lemma meet_col_2:
   using assms meet_col_1 meet_in_def 
   by auto
 
-definition meet_3_in :: "[Lines, Lines, Lines, Points] \<Rightarrow> bool" where
+definition meet_3_in :: "['line, 'line, 'line, 'point] \<Rightarrow> bool" where
 "meet_3_in l m n P \<equiv> meet_in l m P \<and> meet_in l n P"
 
 lemma meet_all_3:
@@ -69,7 +72,7 @@ lemma meet_3_col_3:
   by auto
 
 definition distinct7 ::
-  "[Points, Points, Points, Points, Points, Points, Points] \<Rightarrow> bool" where
+  "['point, 'point, 'point, 'point, 'point, 'point, 'point] \<Rightarrow> bool" where
 "distinct7 A B C D E F G \<equiv> (A \<noteq> B) \<and> (A \<noteq> C) \<and> (A \<noteq> D) \<and> (A \<noteq> E) \<and> (A \<noteq> F) \<and> (A \<noteq> G) \<and>
 (B \<noteq> C) \<and> (B \<noteq> D) \<and> (B \<noteq> E) \<and> (B \<noteq> F) \<and> (B \<noteq> G) \<and>
 (C \<noteq> D) \<and> (C \<noteq> E) \<and> (C \<noteq> F) \<and> (C \<noteq> G) \<and>
@@ -77,7 +80,7 @@ definition distinct7 ::
 (E \<noteq> F) \<and> (E \<noteq> G) \<and>
 (F \<noteq> G)"
 
-definition distinct3l :: "[Lines, Lines, Lines] \<Rightarrow> bool" where
+definition distinct3l :: "['line, 'line, 'line] \<Rightarrow> bool" where
 "distinct3l l m n \<equiv> l \<noteq> m \<and> l \<noteq> n \<and> m \<noteq> n"
 
 (* From now on we give less general statements on purpose to avoid a lot of uninteresting 
@@ -87,7 +90,7 @@ textbook-like. For the working mathematician the only thing that probably matter
 theorem without considering all the degenerate cases for which the statement might still hold. *)
 
 definition desargues_config :: 
-  "[Points, Points, Points, Points, Points, Points, Points, Points, Points, Points] => bool" where
+  "['point, 'point, 'point, 'point, 'point, 'point, 'point, 'point, 'point, 'point] => bool" where
 "desargues_config A B C A' B' C' M N P R \<equiv> distinct7 A B C A' B' C' R \<and> \<not> col A B C 
 \<and> \<not> col A' B' C' \<and> distinct3l (line A A') (line B B') (line C C') \<and> 
 meet_3_in (line A A') (line B B') (line C C') R \<and> (line A B) \<noteq> (line A' B') \<and> 
@@ -116,13 +119,13 @@ lemma desargues_config_rot_CCW:
 "high-level", i.e. textbook-like, way. *)
 
 definition are_perspective_from_point :: 
-  "[Points, Points, Points, Points, Points, Points, Points] \<Rightarrow> bool" where
+  "['point, 'point, 'point, 'point, 'point, 'point, 'point] \<Rightarrow> bool" where
 "are_perspective_from_point A B C A' B' C' R \<equiv> distinct7 A B C A' B' C' R \<and> triangle A B C \<and>
 triangle A' B' C' \<and> distinct3l (line A A') (line B B') (line C C') \<and> 
 meet_3_in (line A A') (line B B') (line C C') R"
 
 definition are_perspective_from_line ::
-  "[Points, Points, Points, Points, Points, Points] \<Rightarrow> bool" where
+  "['point, 'point, 'point, 'point, 'point, 'point] \<Rightarrow> bool" where
 "are_perspective_from_line A B C A' B' C' \<equiv> distinct6 A B C A' B' C' \<longrightarrow> triangle A B C \<longrightarrow>
 triangle A' B' C' \<longrightarrow> line A B \<noteq> line A' B' \<longrightarrow> line A C \<noteq> line A' C' \<longrightarrow> line B C \<noteq> line B' C' \<longrightarrow>
 col (inter (line A B) (line A' B')) (inter (line A C) (line A' C')) (inter (line B C) (line B' C'))"
@@ -147,6 +150,7 @@ definition desargues_prop :: "bool" where
 \<forall>A B C A' B' C' P. 
   are_perspective_from_point A B C A' B' C' P \<longrightarrow> are_perspective_from_line A B C A' B' C'"
 
+end
 end
 
 

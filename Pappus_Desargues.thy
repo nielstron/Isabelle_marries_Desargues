@@ -12,6 +12,9 @@ property in a projective plane.
 
 section \<open>Hessenberg's Theorem\<close>
 
+context projective_plane
+begin
+
 lemma col_ABC_ABD_1:
   assumes "A \<noteq> B" and "col A B C" and "col A B D"
   shows "col B C D"
@@ -134,8 +137,10 @@ qed
 lemma desargues_config_not_col_8:
   assumes "desargues_config A B C A' B' C' M N P R"
   shows "\<not> col A C C'"
-  by (metis assms col_ABA col_line_eq_1 col_rot_CW desargues_config_def desargues_config_not_col_3 
-      desargues_config_not_col_7 distinct3l_def meet_3_col_1 meet_3_col_2 meet_3_col_3)
+  
+  by (smt (z3) assms col_ABA col_line_eq_1 col_rot_CW desargues_config_def desargues_config_not_col_6 desargues_config_not_col_7 distinct3l_def meet_3_col_1 meet_3_col_3 projective_plane.meet_all_3 projective_plane.meet_col_1 projective_plane_axioms)
+  (*by (metis assms col_ABA col_line_eq_1 col_rot_CW desargues_config_def desargues_config_not_col_3 
+      desargues_config_not_col_7 distinct3l_def meet_3_col_1 meet_3_col_2 meet_3_col_3)*)
 
 lemma desargues_config_not_col_9:
   assumes "desargues_config A B C A' B' C' M N P R"
@@ -280,7 +285,7 @@ corollary corollary_1:
   by (metis assms(1) assms(2) col_rot_CW desargues_config_rot_CCW lemma_1 line_comm)
 
 definition triangle_circumscribes_triangle :: 
-  "[Points, Points, Points, Points, Points, Points] \<Rightarrow> bool" where
+  "['point, 'point, 'point, 'point, 'point, 'point] \<Rightarrow> bool" where
 "triangle_circumscribes_triangle A' B' C' A B C \<equiv> incid A (line B' C') \<and> incid C (line A' B') \<and>
 incid B (line A' C')"
 
@@ -469,8 +474,7 @@ corollary pascal_desargues:
   by (simp add: assms hessenberg_thereom pascal_pappus)
 
 end
-
-
+end
     
 
 
