@@ -20,6 +20,10 @@ begin
 definition distinct3 :: "['point, 'point, 'point] \<Rightarrow> bool" where
 "distinct3 A B C \<equiv> A \<noteq> B \<and> A \<noteq> C \<and> B \<noteq> C"
 
+lemma "distinct3 A B C = distinct [A, B, C]"
+  unfolding distinct3_def
+  by auto
+
 definition triangle :: "['point, 'point, 'point] \<Rightarrow> bool" where
 "triangle A B C \<equiv> distinct3 A B C \<and> (line A B \<noteq> line A C)"
 
@@ -80,8 +84,16 @@ definition distinct7 ::
 (E \<noteq> F) \<and> (E \<noteq> G) \<and>
 (F \<noteq> G)"
 
+lemma "distinct7 A B C D E F G = distinct [A,B,C,D,E,F,G]"
+  unfolding distinct7_def
+  by auto
+
 definition distinct3l :: "['line, 'line, 'line] \<Rightarrow> bool" where
 "distinct3l l m n \<equiv> l \<noteq> m \<and> l \<noteq> n \<and> m \<noteq> n"
+
+lemma "distinct3l l m n = distinct [l,m,n]"
+  unfolding distinct3l_def
+  by auto
 
 (* From now on we give less general statements on purpose to avoid a lot of uninteresting 
 degenerate cases, since we can hardly think of any interesting application where one would need 

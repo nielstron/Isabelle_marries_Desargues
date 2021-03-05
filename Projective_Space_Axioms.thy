@@ -16,8 +16,16 @@ section \<open>The axioms of the Projective Space\<close>
 definition distinct4 :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
 "distinct4 A B C D \<equiv> (A \<noteq> B) \<and> (A \<noteq> C) \<and> (A \<noteq> D)\<and> (B \<noteq> C) \<and> (B \<noteq> D) \<and> (C \<noteq> D)"
 
+lemma "distinct4 A B C D = distinct [A,B,C,D]"
+  unfolding distinct4_def
+  by auto
+
 definition distinct3 :: "'a => 'a => 'a => bool" where
 "distinct3 A B C \<equiv> (A \<noteq> B) \<and> (A \<noteq> C) \<and> (B \<noteq> C)"
+
+lemma "distinct3 A B C = distinct [A,B,C]"
+  unfolding distinct3_def
+  by auto
 
 locale projective_space =
   (* One has a type of 'point *)

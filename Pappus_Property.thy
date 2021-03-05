@@ -28,6 +28,10 @@ definition distinct6 ::
 (D \<noteq> E) \<and> (D \<noteq> F) \<and>
 (E \<noteq> F)"
 
+lemma "distinct6 A B C D E F = distinct [A,B,C,D,E,F]"
+  unfolding distinct6_def
+  by auto
+
 definition lines :: "'point \<Rightarrow> 'point \<Rightarrow> 'line set" where
 "lines P Q \<equiv> {l. incid P l \<and> incid Q l}"
 
