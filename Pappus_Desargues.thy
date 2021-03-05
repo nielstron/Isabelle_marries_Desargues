@@ -266,9 +266,7 @@ proof-
         by (metis E_def F_def assms(1) ax_uniqueness col_rot_CW desargues_config_def f2 incidA_lAB 
             incidB_lAB incid_inter_left is_a_intersec_def meet_col_1 meet_col_2)
       have f8:"is_a_intersec P Q A X F"
-        by (metis Q_def \<open>\<lbrakk>\<not> incid A (line B' C'); \<not> incid C' (line A B)\<rbrakk> \<Longrightarrow> col P X F\<close> assms(1) 
-            ax_uniqueness col_rot_CW desargues_config_def f3 incidA_lAB incidB_lAB incid_inter_left 
-            is_a_intersec_def meet_col_2 meet_comm that(1) that(2))
+        by (metis Q_def \<open>\<lbrakk>\<not> incid A (line B' C'); \<not> incid C' (line A B)\<rbrakk> \<Longrightarrow> col P X F\<close> assms(1) col_AAB col_A_B_ABl col_line_eq_2 col_rot_CW desargues_config_def is_a_intersec_def meet_col_1 that(1) that(2))
       from f1 and f2 and f3 and f4 and f5 and f6 and f7 and f8 and assms(2) show "col M N P"
         using is_pappus2_def is_pappus_def 
         by blast
@@ -378,8 +376,7 @@ proof-
           desargues_config_not_col_9 incidB_lAB incid_inter_left incid_inter_right 
           line_comm meet_3_col_2 meet_3_col_3 meet_col_1 meet_col_2 triangle_circumscribes_triangle_def)
     have f2:"A \<noteq> B' \<and> T \<noteq> A' \<and> line A B' \<noteq> line T A'"
-      by (smt T_def assms(2) col_def desargues_config_def desargues_config_not_col_1 
-          desargues_config_not_col_9 incidB_lAB incid_C_AB incid_inter_left line_comm meet_in_def)
+      by (smt (verit) S_def T_def assms(2) assms(3) col_A_B_ABl col_line_eq_2 desargues_config_def desargues_config_not_col_1 desargues_config_not_col_9 f1 incidA_lAB inter_comm line_comm meet_3_col_1 meet_col_2 projective_plane.col_def projective_plane_axioms triangle_circumscribes_triangle_def)
     have f3:"S \<noteq> B' \<and> B \<noteq> A'"
       by (smt S_def assms(2) assms(3) ax_uniqueness col_A_B_ABl col_line_eq_2 col_rot_CW 
           desargues_config_def desargues_config_not_col_2 desargues_config_not_col_5 
@@ -397,8 +394,7 @@ proof-
       by (metis S_def T_def assms(2) col_ABC_ABD_1 col_A_B_ABl col_def desargues_config_def incidA_lAB 
           incidB_lAB is_a_intersec_def meet_in_def)
     have f8:"is_a_intersec M A B' T A'"
-      by (metis \<open>col M T A'\<close> assms(2) assms(3) col_rot_CW desargues_config_def f2 incidA_lAB incidB_lAB 
-          is_a_intersec_def meet_col_2 triangle_circumscribes_triangle_def uniq_inter)
+      by (smt (verit, del_insts) \<open>col M T A'\<close> assms(2) assms(3) col_rot_CW desargues_config_def f2 incidA_lAB incidB_lAB is_a_intersec_def meet_col_2 projective_plane.ax_uniqueness projective_plane_axioms triangle_circumscribes_triangle_def)
     have f9:"is_a_intersec N S B' B A'"
       using \<open>col N S B'\<close> assms(2) assms(3) col_def desargues_config_def incidA_lAB is_a_intersec_def 
         meet_in_def triangle_circumscribes_triangle_def 
