@@ -13,18 +13,12 @@ An alternative set of axioms could use planes as basic objects in addition to 'p
 
 section \<open>The axioms of the Projective Space\<close>
 
-definition distinct4 :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
-"distinct4 A B C D \<equiv> (A \<noteq> B) \<and> (A \<noteq> C) \<and> (A \<noteq> D)\<and> (B \<noteq> C) \<and> (B \<noteq> D) \<and> (C \<noteq> D)"
-
-lemma "distinct4 A B C D = distinct [A,B,C,D]"
-  unfolding distinct4_def
+lemma distinct4_def:
+"distinct [A,B,C,D] = ((A \<noteq> B) \<and> (A \<noteq> C) \<and> (A \<noteq> D)\<and> (B \<noteq> C) \<and> (B \<noteq> D) \<and> (C \<noteq> D))"
   by auto
 
-definition distinct3 :: "'a => 'a => 'a => bool" where
-"distinct3 A B C \<equiv> (A \<noteq> B) \<and> (A \<noteq> C) \<and> (B \<noteq> C)"
-
-lemma "distinct3 A B C = distinct [A,B,C]"
-  unfolding distinct3_def
+lemma distinct3_def:
+  "distinct [A, B, C] = (A \<noteq> B \<and> A \<noteq> C \<and> B \<noteq> C)"
   by auto
 
 locale projective_space =
@@ -49,7 +43,7 @@ locale projective_space =
   (* Ax2: If A B C D are four distinct 'point such that AB meets CD then AC meets BD.
   Sometimes this is called Pasch's axiom, but according to Wikipedia it is misleading
   since Pasch's axiom refers to something else. *)
-  assumes ax2: "distinct4 A B C D \<longrightarrow> (incid A lAB \<and> incid B lAB) 
+  assumes ax2: "distinct [A,B,C,D] \<longrightarrow> (incid A lAB \<and> incid B lAB) 
   \<longrightarrow> (incid C lCD \<and> incid D lCD) \<longrightarrow> (incid A lAC \<and> incid C lAC) \<longrightarrow> 
   (incid B lBD \<and> incid D lBD) \<longrightarrow> (\<exists>I.(incid I lAB \<and> incid I lCD)) \<longrightarrow> 
   (\<exists>J.(incid J lAC \<and> incid J lBD))"
@@ -69,7 +63,7 @@ locale projective_space =
 
 
   (* Ax5: The geometry is not 4-dimensional, hence it is exactly 3-dimensional *)
-  assumes ax5: "distinct3 l1 l2 l3 \<longrightarrow> (\<exists>l4 J1 J2 J3. distinct3 J1 J2 J3 \<and> 
+  assumes ax5: "distinct [l1,l2,l3] \<longrightarrow> (\<exists>l4 J1 J2 J3. distinct [J1,J2,J3] \<and> 
   meet l1 l4 = J1 \<and> meet l2 l4 = J2 \<and> meet l3 l4 = J3)"
 
 

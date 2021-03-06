@@ -42,7 +42,7 @@ proof
   assume a1:"col A A' B'"
   have f1:"A \<noteq> A'" 
     using assms desargues_config_def distinct7_def 
-    by blast
+    by force
   have f2:"col A A' R"
     using assms desargues_config_def meet_3_col_1 
     by blast
@@ -53,10 +53,10 @@ proof
     by (metis assms ax_uniqueness col_def desargues_config_def f1 incidA_lAB incidB_lAB)
   have f5:"A' \<noteq> B'" 
     using assms desargues_config_def distinct7_def 
-    by blast
+    by force
   have f6:"B' \<noteq> R" 
     using assms desargues_config_def distinct7_def 
-    by blast
+    by force
   from f3 and f5 and f6 have f7:"line A' B' = line B' R"
     using col_line_eq_1 
     by blast
@@ -65,7 +65,7 @@ proof
   have "line A A' = line B B'"
     by (simp add: \<open>line B' R = line B B'\<close> f4 f7)
   then have "False"
-    using assms desargues_config_def distinct3l_def 
+    using assms desargues_config_def distinct3_def 
     by auto
   then show f8:"col A A' B' \<Longrightarrow> False"
     by simp
@@ -81,7 +81,7 @@ lemma desargues_config_not_col_3:
   assumes "desargues_config A B C A' B' C' M N P R"
   shows "\<not> col C C' B'"
   by (smt assms col_line_eq_1 col_rot_CW desargues_config_def desargues_config_not_col_2 
-      desargues_config_rot_CW distinct3l_def meet_3_in_def meet_col_1 meet_col_2)
+      desargues_config_rot_CW distinct3_def meet_3_in_def meet_col_1 meet_col_2)
 
 lemma desargues_config_not_col_4:
   assumes "desargues_config A B C A' B' C' M N P R"
@@ -128,7 +128,7 @@ proof
   from f5 and f6 and f7 have "line A A' = line B B'"
     by simp
   then have "False"
-    using assms desargues_config_def distinct3l_def 
+    using assms desargues_config_def distinct3_def 
     by auto
   thus "col A B B' \<Longrightarrow> False"
     by simp
@@ -138,9 +138,9 @@ lemma desargues_config_not_col_8:
   assumes "desargues_config A B C A' B' C' M N P R"
   shows "\<not> col A C C'"
   
-  by (smt (z3) assms col_ABA col_line_eq_1 col_rot_CW desargues_config_def desargues_config_not_col_6 desargues_config_not_col_7 distinct3l_def meet_3_col_1 meet_3_col_3 projective_plane.meet_all_3 projective_plane.meet_col_1 projective_plane_axioms)
+  by (smt (z3) assms col_ABA col_line_eq_1 col_rot_CW desargues_config_def desargues_config_not_col_6 desargues_config_not_col_7 distinct3_def meet_3_col_1 meet_3_col_3 projective_plane.meet_all_3 projective_plane.meet_col_1 projective_plane_axioms)
   (*by (metis assms col_ABA col_line_eq_1 col_rot_CW desargues_config_def desargues_config_not_col_3 
-      desargues_config_not_col_7 distinct3l_def meet_3_col_1 meet_3_col_2 meet_3_col_3)*)
+      desargues_config_not_col_7 distinct3_def meet_3_col_1 meet_3_col_2 meet_3_col_3)*)
 
 lemma desargues_config_not_col_9:
   assumes "desargues_config A B C A' B' C' M N P R"
@@ -182,7 +182,7 @@ proof-
     and "X = inter (line A C') (line R B)" and "F = inter (line A' C') (line R Q)"
   have "col X E M" if "\<not> incid A (line B' C')" and "\<not> incid C' (line A B)"
   proof-
-    have f1:"distinct6 C C' R Q B A"
+    have f1:"distinct [C,C',R,Q,B,A]"
       by (smt Q_def \<open>\<not> incid A (line B' C')\<close> \<open>\<not> incid C' (line A B)\<close> assms(1) col_ABB col_A_B_ABl 
           col_A_B_lAB col_line_eq_2 col_rot_CW desargues_config_def desargues_config_not_col_12 
           desargues_config_not_col_2 desargues_config_not_col_3 desargues_config_not_col_7 
@@ -211,7 +211,7 @@ proof-
   qed
   have "col P X F" if "\<not> incid A (line B' C')" and "\<not> incid C' (line A B)"
   proof-
-    have f1:"distinct6 A' A R Q B' C'"
+    have f1:"distinct [A',A,R,Q,B',C']"
       by (smt Q_def \<open>\<not> incid A (line B' C')\<close> \<open>\<not> incid C' (line A B)\<close> assms(1) col_AAB col_A_B_ABl 
           col_A_B_lAB col_line_eq_1 col_rot_CW desargues_config_def desargues_config_not_col_2 
           desargues_config_not_col_3 desargues_config_not_col_4 desargues_config_not_col_6 
@@ -305,7 +305,7 @@ proof-
 (* The collinearity of M N P follows from three applications of Pappus property *)
   have "col N S B'"
   proof-
-    have f1:"distinct6 R C C' P B A"
+    have f1:"distinct [R,C,C',P,B,A]"
       by (smt assms(2) col_AAB col_line_eq_2 col_rot_CW desargues_config_def 
           desargues_config_not_col_1 desargues_config_not_col_12 desargues_config_not_col_2 
           desargues_config_not_col_5 desargues_config_not_col_7 desargues_config_not_col_8 
@@ -323,7 +323,7 @@ proof-
       using S_def col_2cycle inter_is_a_intersec is_a_intersec_def 
       by auto
     have "line B C' = line A' C'"
-      by (metis \<open>distinct6 R C C' P B A\<close> assms(3) ax_uniqueness distinct6_def incidA_lAB incidB_lAB 
+      by (metis \<open>distinct [R,C,C',P,B,A]\<close> assms(3) ax_uniqueness distinct6_def incidA_lAB incidB_lAB 
           triangle_circumscribes_triangle_def)
     then have f6:"is_a_intersec N C A B C'"
       by (metis assms(2) desargues_config_def inter_is_a_intersec line_comm meet_in_def uniq_inter)
@@ -335,7 +335,7 @@ proof-
   qed
   have "col M T A'"
   proof-
-    have f1:"distinct6 R C C' P A B"
+    have f1:"distinct [R,C,C',P,A,B]"
       by (smt assms(2) col_ABA col_line_eq_2 col_rot_CW desargues_config_def desargues_config_not_col_1 
           desargues_config_not_col_12 desargues_config_not_col_2 desargues_config_not_col_5 
           desargues_config_not_col_7 desargues_config_not_col_8 desargues_config_not_col_9 distinct6_def 
@@ -347,10 +347,10 @@ proof-
       using assms(2) col_rot_CW desargues_config_def meet_col_1 
       by blast
     have f4:"line P C = line A' B'"
-      by (metis \<open>distinct6 R C C' P A B\<close> assms(2) assms(3) ax_uniqueness desargues_config_def 
+      by (metis \<open>distinct [R,C,C',P,A,B]\<close> assms(2) assms(3) ax_uniqueness desargues_config_def 
           distinct6_def incidA_lAB incidB_lAB meet_in_def triangle_circumscribes_triangle_def)
     have f5:"line R A = line A A'"
-      by (metis \<open>distinct6 R C C' P A B\<close> assms(2) col_AAB col_line_eq_2 desargues_config_def 
+      by (metis \<open>distinct [R,C,C',P,A,B]\<close> assms(2) col_AAB col_line_eq_2 desargues_config_def 
           desargues_config_not_col_1 distinct6_def line_comm meet_3_col_1)
     from f4 and f5 have f6:"is_a_intersec A' R A P C"
       by (metis col_def incidA_lAB incidB_lAB is_a_intersec_def)
@@ -427,7 +427,7 @@ proof-
   proof-
     have "desargues_config A' B' C' A B C M N P R"
     proof-
-      have f1:"distinct7 A' B' C' A B C R" 
+      have f1:"distinct [A',B',C',A,B,C,R]" 
         using assms(2) desargues_config_def distinct7_def 
         by auto
       have f2:"\<not> col A' B' C'"
@@ -436,7 +436,7 @@ proof-
       have f3:"\<not> col A B C"
         using assms(2) desargues_config_def 
         by blast
-      have f4:"distinct3l (line A' A) (line B' B) (line C' C)"
+      have f4:"distinct [(line A' A),(line B' B),(line C' C)]"
         by (metis assms(2) desargues_config_def line_comm)
       have f5:"meet_3_in (line A' A) (line B' B) (line C' C) R"
         by (metis assms(2) desargues_config_def line_comm)

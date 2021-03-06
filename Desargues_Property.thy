@@ -17,15 +17,12 @@ section \<open>Desargues's Property\<close>
 context projective_plane
 begin
 
-definition distinct3 :: "['point, 'point, 'point] \<Rightarrow> bool" where
-"distinct3 A B C \<equiv> A \<noteq> B \<and> A \<noteq> C \<and> B \<noteq> C"
-
-lemma "distinct3 A B C = distinct [A, B, C]"
-  unfolding distinct3_def
+lemma distinct3_def:
+  "distinct [A, B, C] = (A \<noteq> B \<and> A \<noteq> C \<and> B \<noteq> C)"
   by auto
 
 definition triangle :: "['point, 'point, 'point] \<Rightarrow> bool" where
-"triangle A B C \<equiv> distinct3 A B C \<and> (line A B \<noteq> line A C)"
+"triangle A B C \<equiv> distinct [A,B,C] \<and> (line A B \<noteq> line A C)"
 
 definition meet_in :: "'line \<Rightarrow> 'line => 'point => bool " where
 "meet_in l m P \<equiv> incid P l \<and> incid P m"
@@ -75,25 +72,14 @@ lemma meet_3_col_3:
   using assms meet_3_col_2 meet_3_in_def 
   by auto
 
-definition distinct7 ::
-  "['point, 'point, 'point, 'point, 'point, 'point, 'point] \<Rightarrow> bool" where
-"distinct7 A B C D E F G \<equiv> (A \<noteq> B) \<and> (A \<noteq> C) \<and> (A \<noteq> D) \<and> (A \<noteq> E) \<and> (A \<noteq> F) \<and> (A \<noteq> G) \<and>
+lemma distinct7_def: "distinct [A,B,C,D,E,F,G] = ((A \<noteq> B) \<and> (A \<noteq> C) \<and> (A \<noteq> D) \<and> (A \<noteq> E) \<and> (A \<noteq> F) \<and> (A \<noteq> G) \<and>
 (B \<noteq> C) \<and> (B \<noteq> D) \<and> (B \<noteq> E) \<and> (B \<noteq> F) \<and> (B \<noteq> G) \<and>
 (C \<noteq> D) \<and> (C \<noteq> E) \<and> (C \<noteq> F) \<and> (C \<noteq> G) \<and>
 (D \<noteq> E) \<and> (D \<noteq> F) \<and> (D \<noteq> G) \<and>
 (E \<noteq> F) \<and> (E \<noteq> G) \<and>
-(F \<noteq> G)"
-
-lemma "distinct7 A B C D E F G = distinct [A,B,C,D,E,F,G]"
-  unfolding distinct7_def
+(F \<noteq> G))"
   by auto
 
-definition distinct3l :: "['line, 'line, 'line] \<Rightarrow> bool" where
-"distinct3l l m n \<equiv> l \<noteq> m \<and> l \<noteq> n \<and> m \<noteq> n"
-
-lemma "distinct3l l m n = distinct [l,m,n]"
-  unfolding distinct3l_def
-  by auto
 
 (* From now on we give less general statements on purpose to avoid a lot of uninteresting 
 degenerate cases, since we can hardly think of any interesting application where one would need 
@@ -103,15 +89,15 @@ theorem without considering all the degenerate cases for which the statement mig
 
 definition desargues_config :: 
   "['point, 'point, 'point, 'point, 'point, 'point, 'point, 'point, 'point, 'point] => bool" where
-"desargues_config A B C A' B' C' M N P R \<equiv> distinct7 A B C A' B' C' R \<and> \<not> col A B C 
-\<and> \<not> col A' B' C' \<and> distinct3l (line A A') (line B B') (line C C') \<and> 
+"desargues_config A B C A' B' C' M N P R \<equiv> distinct [A,B,C,A',B',C',R] \<and> \<not> col A B C 
+\<and> \<not> col A' B' C' \<and> distinct [(line A A'),(line B B'),(line C C')] \<and> 
 meet_3_in (line A A') (line B B') (line C C') R \<and> (line A B) \<noteq> (line A' B') \<and> 
 (line B C) \<noteq> (line B' C') \<and> (line A C) \<noteq> (line A' C') \<and> meet_in (line B C) (line B' C') M \<and>
 meet_in (line A C) (line A' C') N \<and> meet_in (line A B) (line A' B') P"
 
 lemma distinct7_rot_CW:
-  assumes "distinct7 A B C D E F G"
-  shows "distinct7 C A B F D E G"
+  assumes "distinct [A,B,C,D,E,F,G]"
+  shows "distinct [C,A,B,F,D,E,G]"
   using assms distinct7_def 
   by auto
 
@@ -119,7 +105,7 @@ lemma distinct7_rot_CW:
 lemma desargues_config_rot_CW:
   assumes "desargues_config A B C A' B' C' M N P R"
   shows "desargues_config C A B C' A' B' P M N R"
-  by (smt assms col_rot_CW desargues_config_def distinct3l_def distinct7_rot_CW line_comm 
+  by (smt assms col_rot_CW desargues_config_def distinct3_def distinct7_rot_CW line_comm 
       meet_3_in_def meet_all_3 meet_comm)
 
 lemma desargues_config_rot_CCW:
@@ -132,13 +118,13 @@ lemma desargues_config_rot_CCW:
 
 definition are_perspective_from_point :: 
   "['point, 'point, 'point, 'point, 'point, 'point, 'point] \<Rightarrow> bool" where
-"are_perspective_from_point A B C A' B' C' R \<equiv> distinct7 A B C A' B' C' R \<and> triangle A B C \<and>
-triangle A' B' C' \<and> distinct3l (line A A') (line B B') (line C C') \<and> 
+"are_perspective_from_point A B C A' B' C' R \<equiv> distinct [A,B,C,A',B',C',R] \<and> triangle A B C \<and>
+triangle A' B' C' \<and> distinct [(line A A'),(line B B'),(line C C')] \<and> 
 meet_3_in (line A A') (line B B') (line C C') R"
 
 definition are_perspective_from_line ::
   "['point, 'point, 'point, 'point, 'point, 'point] \<Rightarrow> bool" where
-"are_perspective_from_line A B C A' B' C' \<equiv> distinct6 A B C A' B' C' \<longrightarrow> triangle A B C \<longrightarrow>
+"are_perspective_from_line A B C A' B' C' \<equiv> distinct [A,B,C,A',B',C'] \<longrightarrow> triangle A B C \<longrightarrow>
 triangle A' B' C' \<longrightarrow> line A B \<noteq> line A' B' \<longrightarrow> line A C \<noteq> line A' C' \<longrightarrow> line B C \<noteq> line B' C' \<longrightarrow>
 col (inter (line A B) (line A' B')) (inter (line A C) (line A' C')) (inter (line B C) (line B' C'))"
 
@@ -152,9 +138,13 @@ lemma perspective_from_point_desargues_config:
     "line A C \<noteq> line A' C'" and "line B C \<noteq> line B' C'"
   shows "desargues_config A B C A' B' C' (inter (line B C) (line B' C')) (inter (line A C) (line A' C')) 
     (inter (line A B) (line A' B')) R"
-  by (smt are_perspective_from_point_def assms(1) assms(2) assms(3) assms(4) col_line_ext_1 
-      desargues_config_def distinct3_def incidB_lAB inter_line_ext_2 line_comm meet_in_inter 
-      triangle_def uniq_inter)
+  unfolding desargues_config_def distinct7_def distinct3_def
+
+  using assms are_perspective_from_point_def  apply auto
+      apply (smt (z3) ax_uniqueness col_2cycle col_line_ext_1 incidB_lAB line_ext_def mem_Collect_eq triangle_def)
+  apply (smt (z3) ax_uniqueness col_def incidA_lAB line_comm triangle_def)
+  using meet_in_inter apply presburger+
+  done
 
 (* Now, we state Desargues's property in a textbook-like form *)
 definition desargues_prop :: "bool" where

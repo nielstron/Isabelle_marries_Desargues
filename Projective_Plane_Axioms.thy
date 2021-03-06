@@ -31,7 +31,7 @@ locale projective_plane =
   assumes ax_uniqueness: "\<lbrakk>incid P l; incid Q l; incid P m; incid Q m\<rbrakk> \<Longrightarrow>  P = Q \<or> l = m"
 
   (* Ax3: There exists four points such that no three of them are collinear *)
-  assumes ax3: "\<exists>A B C D. (A \<noteq> B) \<and> (A \<noteq> C) \<and> (A \<noteq> D) \<and> (B \<noteq> C) \<and> (B \<noteq> D) \<and> (C \<noteq> D) \<and> (\<forall>l.
+  assumes ax3: "\<exists>A B C D. distinct [A,B,C,D] \<and> (\<forall>l.
               (incid A l \<and> incid B l \<longrightarrow> \<not>(incid C l) \<and> \<not>(incid D l)) \<and>
               (incid A l \<and> incid C l \<longrightarrow> \<not>(incid B l) \<and> \<not>(incid D l)) \<and>
               (incid A l \<and> incid D l \<longrightarrow> \<not>(incid B l) \<and> \<not>(incid C l)) \<and>
